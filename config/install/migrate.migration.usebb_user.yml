@@ -1,0 +1,85 @@
+id: usebb_user
+label: UseBB users
+source:
+  plugin: usebb_user
+  constants:
+    preferred_langcode: en
+    signature_format: forum_html
+process:
+  uid: { }
+  name: name
+  pass: passwd
+  mail: email
+  created: regdate
+  access: last_pageview
+  login: last_login
+  status: active
+  preferred_langcode: 'constants/preferred_langcode'
+  init: email
+  signature:
+    -
+      plugin: skip_process_on_empty
+      source: signature
+    -
+      plugin: usebb_bbcode_to_html
+    -
+      plugin: usebb_string_to_unicode
+    -
+      plugin: usebb_truncate_text
+      length: 255
+  signature_format: 'constants/signature_format'
+  timezone:
+    plugin: usebb_timezone
+    source: timezone
+  'roles/target_id':
+    plugin: static_map
+    source: level
+    map:
+      3: administrator
+      2: authenticated
+      1: authenticated
+  'field_real_name/value':
+    -
+      plugin: skip_process_on_empty
+      source: real_name
+    -
+      plugin: usebb_string_to_unicode
+  'field_birthday/value': birthday
+  'field_location/value':
+    -
+      plugin: skip_process_on_empty
+      source: location
+    -
+      plugin: usebb_string_to_unicode
+  'field_websites':
+    -
+      plugin: skip_process_on_empty
+      source: website
+    -
+      plugin: usebb_website
+  'field_occupation/value':
+    -
+      plugin: skip_process_on_empty
+      source: occupation
+    -
+      plugin: usebb_string_to_unicode
+  'field_interests':
+    -
+      plugin: skip_process_on_empty
+      source: interests
+    -
+      plugin: usebb_string_to_unicode
+    -
+      plugin: usebb_split_values
+  'field_social_networks':
+    plugin: usebb_combine_fields
+    fields:
+      msnm: 'Windows Messenger'
+      yahoom: 'Yahoo! Messenger'
+      aim: 'AIM'
+      icq: 'ICQ'
+      jabber: 'Jabber/XMPP'
+      skype: 'Skype'
+destination:
+  plugin: entity:user
+  md5_passwords: true

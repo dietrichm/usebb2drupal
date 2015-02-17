@@ -1,0 +1,32 @@
+<?php
+
+use Drupal\node\Entity\Node;
+use Drupal\comment\Entity\Comment;
+
+/**
+ * Implements hook_ENTITY_TYPE_presave() for node entities.
+ *
+ * Set the changed timestamp to the imported one from UseBB.
+ */
+function usebb2drupal_node_presave(Node $node) {
+  if ($node->bundle() === 'forum' && isset($node->usebb_changed)) {
+    $node->changed = $node->usebb_changed;
+  }
+}
+
+/**
+ * Implements hook_ENTITY_TYPE_presave() for comment entities.
+ *
+ * Set the changed timestamp to the imported one from UseBB. Same for the
+ * hostname.
+ */
+function usebb2drupal_comment_presave(Comment $comment) {
+  if ($comment->bundle() === 'comment_forum') {
+    if (isset($comment->usebb_changed)) {
+      $comment->changed = $comment->usebb_changed;
+    }
+    if (isset($comment->usebb_hostname)) {
+      $comment->hostname = $comment->usebb_hostname;
+    }
+  }
+}

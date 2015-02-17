@@ -1,0 +1,7 @@
+usebb2drupal.migrate:
+  path: '/admin/structure/forum/migrate-usebb'
+  defaults:
+    _form: '\Drupal\usebb2drupal\Form\MigrateForm'
+    _title: 'Migrate UseBB'
+  requirements:
+    _permission: 'administer forums'

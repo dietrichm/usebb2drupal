@@ -1,0 +1,5 @@
+usebb2drupal.migrate:
+  route_name: usebb2drupal.migrate
+  base_route: forum.overview
+  title: 'Migrate UseBB'
+  weight: 200

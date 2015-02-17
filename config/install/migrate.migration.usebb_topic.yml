@@ -1,0 +1,71 @@
+id: usebb_topic
+label: UseBB topics
+source:
+  plugin: usebb_topic
+  constants:
+    type: forum
+    langcode: und
+    status: 1
+    promote: 0
+process:
+  nid: { }
+  vid: { }
+  type: 'constants/type'
+  langcode: 'constants/langcode'
+  title:
+    plugin: usebb_string_to_unicode
+    source: topic_title
+  uid:
+    -
+      plugin: skip_process_on_empty
+      source: poster_id
+    -
+      plugin: migration
+      migration: usebb_user
+  status: 'constants/status'
+  created: post_time
+  usebb_changed:
+    plugin: usebb_post_edit_time
+    source: post_edit_time
+  promote: 'constants/promote'
+  'comment_forum/status':
+    plugin: static_map
+    source: status_locked
+    map:
+      1: 1
+      0: 2
+  sticky: status_sticky
+  'taxonomy_forums/target_id':
+    plugin: migration
+    migration: usebb_forum
+    source: forum_id
+  'body/format':
+    plugin: static_map
+    source: enable_html
+    map:
+      1: full_html
+      0: forum_html
+  'body/value':
+    -
+      plugin: usebb_bbcode_to_html
+      source: content
+    -
+      plugin: usebb_string_to_unicode
+  'body/summary': { }
+  revision_uid:
+    -
+      plugin: skip_process_on_empty
+      source: post_edit_by
+    -
+      plugin: migration
+      migration: usebb_user
+  revision_log: { }
+  revision_timestamp:
+    plugin: usebb_post_edit_time
+    source: post_edit_time
+destination:
+  plugin: entity:node
+migration_dependencies:
+  required:
+    - usebb_forum
+    - usebb_user

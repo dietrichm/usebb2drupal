@@ -1,0 +1,20 @@
+id: usebb_user_contact
+label: UseBB user contact settings
+source:
+  plugin: usebb_user
+  constants:
+    module: contact
+    key: enabled
+process:
+  uid:
+    plugin: migration
+    migration: usebb_user
+    source: id
+  module: 'constants/module'
+  key: 'constants/key'
+  settings: email_show
+destination:
+  plugin: user_data
+migration_dependencies:
+  required:
+    - usebb_user

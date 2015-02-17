@@ -1,0 +1,25 @@
+id: usebb_forum
+label: UseBB forums
+source:
+  plugin: usebb_forum
+  constants:
+    taxonomy: forums
+    description_format: full_html
+    forum_container: 0
+process:
+  tid: { }
+  vid: 'constants/taxonomy'
+  name: name
+  'description/value': descr
+  'description/format': 'constants/description_format'
+  weight: sort_id
+  parent:
+    plugin: migration
+    migration: usebb_category
+    source: cat_id
+  'forum_container/value': 'constants/forum_container'
+destination:
+  plugin: entity:taxonomy_term
+migration_dependencies:
+  required:
+    - usebb_category

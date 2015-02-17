@@ -1,0 +1,107 @@
+migrate.source.usebb_user:
+  type: migrate_source_sql
+  label: 'UseBB user'
+  mapping:
+    constants:
+      type: mapping
+      label: 'Constants'
+      mapping:
+        preferred_langcode:
+          type: string
+          label: 'Preferred langcode'
+        signature_format:
+          type: string
+          label: 'Signature format'
+
+migrate.source.usebb_user_contact:
+  type: migrate_source_sql
+  label: 'UseBB user contact setting'
+  mapping:
+    constants:
+      type: mapping
+      label: 'Constants'
+      mapping:
+        module:
+          type: string
+          label: 'Module'
+        key:
+          type: string
+          label: 'Key'
+
+migrate.source.usebb_category:
+  type: migrate_source_sql
+  label: 'UseBB category'
+  mapping:
+    constants:
+      type: mapping
+      label: 'Constants'
+      mapping:
+        taxonomy:
+          type: string
+          label: 'Taxonomy'
+        parent:
+          type: integer
+          label: 'Parent'
+        forum_container:
+          type: integer
+          label: 'Forum container'
+
+migrate.source.usebb_forum:
+  type: migrate_source_sql
+  label: 'UseBB forum'
+  mapping:
+    constants:
+      type: mapping
+      label: 'Constants'
+      mapping:
+        taxonomy:
+          type: string
+          label: 'Taxonomy'
+        description_format:
+          type: string
+          label: 'Description format'
+        forum_container:
+          type: integer
+          label: 'Forum container'
+
+migrate.source.usebb_topic:
+  type: migrate_source_sql
+  label: 'UseBB topic'
+  mapping:
+    constants:
+      type: mapping
+      label: 'Constants'
+      mapping:
+        type:
+          type: string
+          label: 'Type'
+        langcode:
+          type: string
+          label: 'Langcode'
+        status:
+          type: integer
+          label: 'Status'
+        promote:
+          type: integer
+          label: 'Promote'
+
+migrate.source.usebb_post:
+  type: migrate_source_sql
+  label: 'UseBB post'
+  mapping:
+    constants:
+      type: mapping
+      label: 'Constants'
+      mapping:
+        entity_type:
+          type: string
+          label: 'Entity type'
+        field_name:
+          type: string
+          label: 'Field name'
+        comment_type:
+          type: string
+          label: 'Comment type'
+        status:
+          type: integer
+          label: 'Status'

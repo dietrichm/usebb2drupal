@@ -1,0 +1,24 @@
+name: UseBB2Drupal
+type: module
+description: 'Migrate from legacy UseBB 1 forums.'
+package: Migrate
+core: 8.x
+dependencies:
+  - migrate
+  - forum
+configure: usebb2drupal.migrate
+config_devel:
+  - field.storage.user.field_real_name
+  - field.field.user.user.field_real_name
+  - field.storage.user.field_birthday
+  - field.field.user.user.field_birthday
+  - field.storage.user.field_location
+  - field.field.user.user.field_location
+  - field.storage.user.field_websites
+  - field.field.user.user.field_websites
+  - field.storage.user.field_occupation
+  - field.field.user.user.field_occupation
+  - field.storage.user.field_interests
+  - field.field.user.user.field_interests
+  - field.storage.user.field_social_networks
+  - field.field.user.user.field_social_networks

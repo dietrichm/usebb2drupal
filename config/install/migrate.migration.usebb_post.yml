@@ -1,0 +1,55 @@
+id: usebb_post
+label: UseBB posts
+source:
+  plugin: usebb_post
+  constants:
+    entity_type: node
+    field_name: comment_forum
+    comment_type: comment_forum
+    status: 1
+process:
+  cid: { }
+  pid: { }
+  entity_id:
+    plugin: migration
+    migration: usebb_topic
+    source: topic_id
+  entity_type: 'constants/entity_type'
+  field_name: 'constants/field_name'
+  comment_type: 'constants/comment_type'
+  subject: { }
+  uid:
+    -
+      plugin: skip_process_on_empty
+      source: poster_id
+    -
+      plugin: migration
+      migration: usebb_user
+  name: poster_guest
+  mail: { }
+  homepage: { }
+  usebb_hostname: poster_ip_addr
+  created: post_time
+  usebb_changed:
+    plugin: usebb_post_edit_time
+    source: post_edit_time
+  status: 'constants/status'
+  thread: { }
+  'comment_body/value':
+    -
+      plugin: usebb_bbcode_to_html
+      source: content
+    -
+      plugin: usebb_string_to_unicode
+  'comment_body/format':
+    plugin: static_map
+    source: enable_html
+    map:
+      1: full_html
+      0: forum_html
+destination:
+  plugin: entity:comment
+migration_dependencies:
+  required:
+    - usebb_topic
+    - usebb_user

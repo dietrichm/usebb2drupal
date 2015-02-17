@@ -1,0 +1,18 @@
+id: usebb_category
+label: UseBB categories
+source:
+  plugin: usebb_category
+  constants:
+    taxonomy: forums
+    parent: 0
+    forum_container: 1
+process:
+  tid: { }
+  vid: 'constants/taxonomy'
+  name: name
+  description: { }
+  weight: sort_id
+  parent: 'constants/parent'
+  'forum_container/value': 'constants/forum_container'
+destination:
+  plugin: entity:taxonomy_term
