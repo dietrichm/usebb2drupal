@@ -7,7 +7,7 @@
 
 namespace Drupal\usebb2drupal\Plugin\migrate\process;
 
-use Drupal\migrate\MigrateExecutable;
+use Drupal\migrate\MigrateExecutableInterface;
 use Drupal\migrate\ProcessPluginBase;
 use Drupal\migrate\Row;
 use Drupal\Component\Utility\Unicode;
@@ -27,7 +27,7 @@ class TruncateText extends ProcessPluginBase {
    *
    * @see https://www.drupal.org/node/2279655
    */
-  public function transform($value, MigrateExecutable $migrate_executable, Row $row, $destination_property) {
+  public function transform($value, MigrateExecutableInterface $migrate_executable, Row $row, $destination_property) {
     $value = Unicode::truncate($value, $this->configuration['length']);
     return rtrim(preg_replace('/(?:<(?!.+>)|&(?!.+;)).*$/us', '', $value));
   }

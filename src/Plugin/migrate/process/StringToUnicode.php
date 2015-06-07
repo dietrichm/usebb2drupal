@@ -7,7 +7,7 @@
 
 namespace Drupal\usebb2drupal\Plugin\migrate\process;
 
-use Drupal\migrate\MigrateExecutable;
+use Drupal\migrate\MigrateExecutableInterface;
 use Drupal\migrate\ProcessPluginBase;
 use Drupal\migrate\Row;
 use Drupal\Component\Utility\Unicode;
@@ -44,7 +44,7 @@ class StringToUnicode extends ProcessPluginBase {
    *
    * @see http://php.net/html_entity_decode
    */
-  public function transform($value, MigrateExecutable $migrate_executable, Row $row, $destination_property) {
+  public function transform($value, MigrateExecutableInterface $migrate_executable, Row $row, $destination_property) {
     // Attempt conversion - use when succeeded, otherwise ignore.
     // Also ignore when resulting Unicode string has more chars than original,
     // in which case the post already was in Unicode.

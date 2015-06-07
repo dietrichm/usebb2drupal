@@ -7,7 +7,7 @@
 
 namespace Drupal\usebb2drupal\Plugin\migrate\process;
 
-use Drupal\migrate\MigrateExecutable;
+use Drupal\migrate\MigrateExecutableInterface;
 use Drupal\migrate\ProcessPluginBase;
 use Drupal\migrate\Row;
 
@@ -48,7 +48,7 @@ class Timezone extends ProcessPluginBase {
   /**
    * {@inheritdoc}
    */
-  public function transform($value, MigrateExecutable $migrate_executable, Row $row, $destination_property) {
+  public function transform($value, MigrateExecutableInterface $migrate_executable, Row $row, $destination_property) {
     return isset(static::$timezones[$value]) ? static::$timezones[$value] : 'UTC';
   }
 

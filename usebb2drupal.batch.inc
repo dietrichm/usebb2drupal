@@ -47,13 +47,12 @@ function usebb2drupal_migrate_batch_migrate_operation($migration_id, array $db_s
   $type = str_replace(['usebb_', '_'], ['', ' '], $migration_id);
   Database::addConnectionInfo('migrate', 'default', $db_spec);
   $migration = entity_load('migration', $migration_id);
-  $executable = new MigrateExecutable($migration, new MigrateMessage());
-  $source = $executable->getSource();
+  $source = $migration->getSourcePlugin();
   if (empty($context['sandbox'])) {
     $context['sandbox']['progress'] = 0;
-    // Avoid notice in Source::count().
-    $context['sandbox']['max'] = $source->migration->getSourcePlugin()->count();
+    $context['sandbox']['max'] = $source->count();
   }
+  $executable = new MigrateExecutable($migration, new MigrateMessage());
   $result = $executable->import();
   if ($result === MigrationInterface::RESULT_INCOMPLETE) {
     $context['sandbox']['progress'] += $source->getProcessed();

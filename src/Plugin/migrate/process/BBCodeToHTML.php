@@ -7,11 +7,11 @@
 
 namespace Drupal\usebb2drupal\Plugin\migrate\process;
 
-use Drupal\migrate\MigrateExecutable;
+use Drupal\migrate\MigrateExecutableInterface;
 use Drupal\migrate\ProcessPluginBase;
 use Drupal\migrate\Row;
 use Drupal\Component\Utility\Random;
-use Drupal\Component\Utility\String;
+use Drupal\Component\Utility\SafeMarkup;
 
 /**
  * Convert BBCode to HTML the way UseBB does.
@@ -25,7 +25,7 @@ class BBCodeToHTML extends ProcessPluginBase {
   /**
    * {@inheritdoc}
    */
-  public function transform($value, MigrateExecutable $migrate_executable, Row $row, $destination_property) {
+  public function transform($value, MigrateExecutableInterface $migrate_executable, Row $row, $destination_property) {
     $enable_bbcode = $row->hasSourceProperty('enable_bbcode') ? $row->getSourceProperty('enable_bbcode') : TRUE;
     $enable_html = $row->hasSourceProperty('enable_html') ? $row->getSourceProperty('enable_html') : FALSE;
     return $this->applyBbcode($value, $enable_bbcode, $enable_html);
@@ -57,7 +57,7 @@ class BBCodeToHTML extends ProcessPluginBase {
     $string = ' ' . $string . ' ';
 
     if (!$html) {
-      $string = String::checkPlain($string);
+      $string = SafeMarkup::checkPlain($string);
       if (strpos($string, '&') !== FALSE) {
         $string = preg_replace(array('#&amp;\#([0-9]+)#', '#&\#?[a-z0-9]+$#'), array('&#\\1', ''), $string);
       }
