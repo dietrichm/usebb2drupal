@@ -17,7 +17,8 @@ process:
     source: topic_title
   uid:
     -
-      plugin: skip_process_on_empty
+      plugin: skip_on_empty
+      method: process
       source: poster_id
     -
       plugin: migration
@@ -54,7 +55,8 @@ process:
   'body/summary': { }
   revision_uid:
     -
-      plugin: skip_process_on_empty
+      plugin: skip_on_empty
+      method: process
       source: post_edit_by
     -
       plugin: migration

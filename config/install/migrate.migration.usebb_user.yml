@@ -18,7 +18,8 @@ process:
   init: email
   signature:
     -
-      plugin: skip_process_on_empty
+      plugin: skip_on_empty
+      method: process
       source: signature
     -
       plugin: usebb_bbcode_to_html
@@ -40,32 +41,37 @@ process:
       1: authenticated
   'field_real_name/value':
     -
-      plugin: skip_process_on_empty
+      plugin: skip_on_empty
+      method: process
       source: real_name
     -
       plugin: usebb_string_to_unicode
   'field_birthday/value': birthday
   'field_location/value':
     -
-      plugin: skip_process_on_empty
+      plugin: skip_on_empty
+      method: process
       source: location
     -
       plugin: usebb_string_to_unicode
   'field_websites':
     -
-      plugin: skip_process_on_empty
+      plugin: skip_on_empty
+      method: process
       source: website
     -
       plugin: usebb_website
   'field_occupation/value':
     -
-      plugin: skip_process_on_empty
+      plugin: skip_on_empty
+      method: process
       source: occupation
     -
       plugin: usebb_string_to_unicode
   'field_interests':
     -
-      plugin: skip_process_on_empty
+      plugin: skip_on_empty
+      method: process
       source: interests
     -
       plugin: usebb_string_to_unicode
