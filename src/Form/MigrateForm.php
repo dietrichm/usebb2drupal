@@ -10,7 +10,11 @@ namespace Drupal\usebb2drupal\Form;
 use Drupal\Core\Form\FormBase;
 use Drupal\Core\Form\FormStateInterface;
 use Drupal\Component\Utility\Unicode;
-use Drupal\Core\Database\Database;
+use Drupal\usebb2drupal\Utilities\UseBBInfo;
+use Drupal\usebb2drupal\Exception\InvalidSourcePathException;
+use Drupal\usebb2drupal\Exception\InvalidConfigFileException;
+use Drupal\usebb2drupal\Exception\MissingDatabaseTablesException;
+use \PDOException;
 
 /**
  * UseBB migrate form.
@@ -34,47 +38,9 @@ class MigrateForm extends FormBase {
     }
 
     $form['intro'] = [
-      '#markup' => $this->t('Import UseBB forum structure, content and users by filling in the connection settings to the UseBB database and clicking \'Start migration\'. Existing Drupal content and users will not be modified or removed.'),
+      '#markup' => $this->t('Specify the contents to migrate and the path to the UseBB installation and click \'Start migration\'. Existing Drupal content and users will not be modified or removed.'),
       '#prefix' => '<p>',
       '#suffix' => '</p>',
-    ];
-
-    $form['connection'] = [
-      '#type' => 'fieldset',
-      '#title' => $this->t('Connection settings'),
-    ];
-    $form['connection']['host'] = [
-      '#type' => 'textfield',
-      '#title' => $this->t('Host'),
-      '#default_value' => 'localhost',
-      '#required' => TRUE,
-    ];
-    $form['connection']['username'] = [
-      '#type' => 'textfield',
-      '#title' => $this->t('Username'),
-      '#required' => TRUE,
-    ];
-    $form['connection']['password'] = [
-      '#type' => 'password',
-      '#title' => $this->t('Password'),
-    ];
-    $form['connection']['database'] = [
-      '#type' => 'textfield',
-      '#title' => $this->t('Database name'),
-      '#required' => TRUE,
-    ];
-    $form['connection']['prefix'] = [
-      '#type' => 'textfield',
-      '#title' => $this->t('Table prefix'),
-      '#default_value' => 'usebb_',
-    ];
-
-    $form['source_encoding'] = [
-      '#type' => 'textfield',
-      '#title' => $this->t('Source content encoding'),
-      '#default_value' => 'ISO-8859-1',
-      '#required' => TRUE,
-      '#description' => $this->t('Specify the base encoding primarily used on the UseBB set-up. This can be found in the translations file.'),
     ];
 
     $form['migrate_types'] = [
@@ -85,6 +51,14 @@ class MigrateForm extends FormBase {
         'users' => $this->t('Users only.'),
       ],
       '#default_value' => 'all',
+    ];
+
+    $form['source_path'] = [
+      '#type' => 'textfield',
+      '#title' => $this->t('UseBB installation directory'),
+      '#required' => TRUE,
+      '#description' => $this->t('The absolute directory where UseBB is installed.'),
+      '#default_value' => \Drupal::state()->get('usebb2drupal.source_path'),
     ];
 
     $form['actions'] = [
@@ -103,27 +77,24 @@ class MigrateForm extends FormBase {
    * {@inheritdoc}
    */
   public function validateForm(array &$form, FormStateInterface $form_state) {
-    $values = $form_state->getValues();
-    $db_spec = [
-      'driver' => 'mysql',
-      'database' => $values['database'],
-      'username' => $values['username'],
-      'password' => $values['password'],
-      'host' => $values['host'],
-      'prefix' => $values['prefix'],
-    ];
-    Database::addConnectionInfo('migrate', 'default', $db_spec);
+    $source_path = $form_state->getValue('source_path');
+    \Drupal::state()->set('usebb2drupal.source_path', $source_path);
     try {
-      $conn = Database::getConnection('default', 'migrate');
-      if (!$conn->schema()->tableExists('members')) {
-        $form_state->setError($form['connection']['prefix'], $this->t('No user table found. Please check the table prefix.'));
-      }
+      $info = \Drupal::service('usebb2drupal.info');
+      $info->getDatabase();
+      $info->getLanguages();
     }
-    catch (\Exception $e) {
-      $form_state->setError($form['connection'], $this->t('There was an error connecting to the UseBB database: %error. Please check the connection settings.', ['%error' => $e->getMessage()]));
+    catch (InvalidSourcePathException $e) {
+      $form_state->setError($form['source_path'], $this->t('The source path %source_path does not exist or has no readable config.php.', ['%source_path' => $source_path]));
     }
-    if (function_exists('mb_list_encodings') && !in_array($values['source_encoding'], mb_list_encodings())) {
-      $form_state->setError($form['source_encoding'], $this->t('Specified encoding %encoding does not exist or is not supported.', ['%encoding' => $values['source_encoding']]));
+    catch (InvalidConfigFileException $e) {
+      $form_state->setError($form['source_path'], $this->t('The config.php file contains no UseBB configuration.'));
+    }
+    catch (MissingDatabaseTablesException $e) {
+      $form_state->setError($form['source_path'], $this->t('No UseBB database tables were found, or the defined table prefix is wrong.'));
+    }
+    catch (PDOException $e) {
+      $form_state->setError($form['source_path'], $this->t('Unable to access the database with the credentials specified in config.php.'));
     }
   }
 
@@ -131,7 +102,6 @@ class MigrateForm extends FormBase {
    * {@inheritdoc}
    */
   public function submitForm(array &$form, FormStateInterface $form_state) {
-    \Drupal::state()->set('usebb2drupal.string_to_unicode_charset', $form_state->getValue('source_encoding'));
     switch ($form_state->getValue('migrate_types')) {
       case 'all':
         $migration_list = [
@@ -154,7 +124,7 @@ class MigrateForm extends FormBase {
         $form_state->setRedirect('entity.user.collection');
     }
     module_load_include('inc', 'usebb2drupal', 'usebb2drupal.batch');
-    $batch = usebb2drupal_migrate_batch_build($migration_list, Database::getConnectionInfo('migrate')['default']);
+    $batch = usebb2drupal_migrate_batch_build($migration_list);
     batch_set($batch);
   }
 

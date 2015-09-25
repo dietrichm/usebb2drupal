@@ -1,0 +1,4 @@
+services:
+  usebb2drupal.info:
+    class: Drupal\usebb2drupal\UseBBInfo
+    arguments: ['@state']

@@ -7,11 +7,12 @@
 
 namespace Drupal\usebb2drupal\Plugin\migrate\process;
 
+use Drupal\Core\Plugin\ContainerFactoryPluginInterface;
 use Drupal\migrate\MigrateExecutableInterface;
 use Drupal\migrate\ProcessPluginBase;
 use Drupal\migrate\Row;
 use Drupal\Component\Utility\Unicode;
-
+use Drupal\usebb2drupal\UseBBInfoInterface;
 
 /**
  * Convert string with HTML entities to Unicode.
@@ -20,23 +21,40 @@ use Drupal\Component\Utility\Unicode;
  *   id = "usebb_string_to_unicode"
  * )
  */
-class StringToUnicode extends ProcessPluginBase {
+class StringToUnicode extends ProcessPluginBase implements ContainerFactoryPluginInterface {
 
   /**
-   * Source character set.
-   *
-   * @var string
+   * @var \Drupal\usebb2drupal\UseBBInfoInterface
    */
-  protected static $charset;
+  protected $info;
+
+  /**
+   * Constructs a StringToUnicode plugin.
+   *
+   * @param array $configuration
+   *  The plugin configuration.
+   * @param string $plugin_id
+   *  The plugin ID.
+   * @param mixed $plugin_definition
+   *  The plugin definition.
+   * @param \Drupal\usebb2drupal\UseBBInfoInterface $info
+   *  The UseBB info service.
+   */
+  public function __construct(array $configuration, $plugin_id, array $plugin_definition, UseBBInfoInterface $info) {
+    parent::__construct($configuration, $plugin_id, $plugin_definition);
+    $this->info = $info;
+  }
 
   /**
    * {@inheritdoc}
    */
-  public function __construct(array $configuration, $plugin_id, array $plugin_definition) {
-    parent::__construct($configuration, $plugin_id, $plugin_definition);
-    if (!isset(static::$charset)) {
-      static::$charset = \Drupal::state()->get('usebb2drupal.string_to_unicode_charset', 'ISO-8859-1');
-    }
+  public static function create(ContainerInterface $container, array $configuration, $plugin_id, $plugin_definition) {
+    return new static(
+      $configuration,
+      $plugin_id,
+      $plugin_definition,
+      $container->get('usebb2drupal.info')
+    );
   }
 
   /**
@@ -48,7 +66,8 @@ class StringToUnicode extends ProcessPluginBase {
     // Attempt conversion - use when succeeded, otherwise ignore.
     // Also ignore when resulting Unicode string has more chars than original,
     // in which case the post already was in Unicode.
-    if (($unicode_string = Unicode::convertToUtf8($value, static::$charset)) !== FALSE
+    $charset = $this->info->getEncoding();
+    if (($unicode_string = Unicode::convertToUtf8($value, $charset)) !== FALSE
         && Unicode::strlen($value) >= Unicode::strlen($unicode_string)) {
       $value = $unicode_string;
     }

@@ -8,24 +8,21 @@
 use Drupal\migrate\MigrateExecutable;
 use Drupal\migrate\MigrateMessage;
 use Drupal\migrate\Entity\MigrationInterface;
-use Drupal\Core\Database\Database;
 
 /**
  * Build an import batch for UseBB forum.
  *
  * @param array $migration_list
  *   List of migrations to run.
- * @param array $db_spec
- *   UseBB database connection specification.
  *
  * @return array
  *   Batch structure.
  */
-function usebb2drupal_migrate_batch_build(array $migration_list, array $db_spec) {
+function usebb2drupal_migrate_batch_build(array $migration_list) {
   $batch = [
     'title' => t('Migrating UseBB'),
-    'operations' => array_map(function($migration_id) use($db_spec) {
-      return ['usebb2drupal_migrate_batch_migrate_operation', [$migration_id, $db_spec]];
+    'operations' => array_map(function($migration_id) {
+      return ['usebb2drupal_migrate_batch_migrate_operation', [$migration_id]];
     }, $migration_list),
     'finished' => 'usebb2drupal_migrate_batch_finished',
     'file' => drupal_get_path('module', 'usebb2drupal') . '/usebb2drupal.batch.inc',
@@ -38,14 +35,14 @@ function usebb2drupal_migrate_batch_build(array $migration_list, array $db_spec)
  *
  * @param string $migration_id
  *   Migration ID to run.
- * @param array $db_spec
- *   Database info to connect to the migrated database.
  * @param array $context
  *   Batch context array.
  */
-function usebb2drupal_migrate_batch_migrate_operation($migration_id, array $db_spec, array &$context) {
+function usebb2drupal_migrate_batch_migrate_operation($migration_id, array &$context) {
+  // Ensure database connection is loaded.
+  \Drupal::service('usebb2drupal.info')->getDatabase();
+
   $type = str_replace(['usebb_', '_'], ['', ' '], $migration_id);
-  Database::addConnectionInfo('migrate', 'default', $db_spec);
   $migration = entity_load('migration', $migration_id);
   $source = $migration->getSourcePlugin();
   if (empty($context['sandbox'])) {
@@ -80,7 +77,6 @@ function usebb2drupal_migrate_batch_migrate_operation($migration_id, array $db_s
  *   Operations.
  */
 function usebb2drupal_migrate_batch_finished($success, array $results, array $operations) {
-  \Drupal::state()->delete('usebb2drupal.string_to_unicode_charset');
   if ($success) {
     drupal_set_message(t('Executed UseBB migrations for %types.', ['%types' => implode(', ', array_keys($results))]));
 
