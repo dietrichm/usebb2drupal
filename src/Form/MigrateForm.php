@@ -14,6 +14,7 @@ use Drupal\usebb2drupal\Utilities\UseBBInfo;
 use Drupal\usebb2drupal\Exception\InvalidSourcePathException;
 use Drupal\usebb2drupal\Exception\InvalidConfigFileException;
 use Drupal\usebb2drupal\Exception\MissingDatabaseTablesException;
+use Drupal\usebb2drupal\Exception\MissingLanguagesException;
 use \PDOException;
 
 /**
@@ -90,11 +91,14 @@ class MigrateForm extends FormBase {
     catch (InvalidConfigFileException $e) {
       $form_state->setError($form['source_path'], $this->t('The config.php file contains no UseBB configuration.'));
     }
+    catch (PDOException $e) {
+      $form_state->setError($form['source_path'], $this->t('Unable to access the database with the credentials specified in config.php.'));
+    }
     catch (MissingDatabaseTablesException $e) {
       $form_state->setError($form['source_path'], $this->t('No UseBB database tables were found, or the defined table prefix is wrong.'));
     }
-    catch (PDOException $e) {
-      $form_state->setError($form['source_path'], $this->t('Unable to access the database with the credentials specified in config.php.'));
+    catch (MissingLanguagesException $e) {
+      $form_state->setError($form['source_path'], $this->t('The language files are not present in the UseBB directory.'));
     }
   }
 

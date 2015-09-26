@@ -30,6 +30,8 @@ interface UseBBInfoInterface {
    *
    * @return \Drupal\Core\Database\Connection
    *   UseBB database connection
+   * @throw \PDOException
+   *   When a database connection could not be made.
    * @throw \Drupal\usebb2drupal\Exception\MissingDatabaseTablesException
    *   When the database tables are missing or the prefix is wrong.
    */

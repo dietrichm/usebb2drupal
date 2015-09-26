@@ -18,12 +18,13 @@ CONFIGURATION
 -------------
 
 There is no configuration to be made, but the migration can be started from
-admin/structure/forum/migrate-usebb. Specify UseBB's database info to start
-converting.
+admin/structure/forum/migrate-usebb. Specify UseBB's installation path and
+click 'Start migration'.
 
 Currently, the migration process has not been tested with drush, but should
 work fine by specifying a manifest file as described at
-https://www.drupal.org/node/2257723.
+https://www.drupal.org/node/2257723 and setting the state variable
+usebb2drupal.source_path to UseBB's installation path.
 
 A number of custom user fields are added, including 'occupation', 'interests',
 etc. The migration fills in some user data in these fields. However, the fields

@@ -74,12 +74,14 @@ class UseBBInfo implements UseBBInfoInterface {
         'prefix' => $this->databaseConfig['prefix'],
       ];
       Database::addConnectionInfo('migrate', 'default', $db_spec);
-      $this->database = Database::getConnection('default', 'migrate');
+      $database = Database::getConnection('default', 'migrate');
 
       // Check the tables and prefix are okay.
-      if (!$this->database->schema()->tableExists('members')) {
+      if (!$database->schema()->tableExists('members')) {
         throw new MissingDatabaseTablesException('Wrong table prefix or no database tables found.');
       }
+
+      $this->database = $database;
     }
     return $this->database;
   }
@@ -101,7 +103,7 @@ class UseBBInfo implements UseBBInfoInterface {
         throw new MissingLanguagesException('No language files found in the UseBB path.');
       }
 
-      $this->languages = [];
+      $languages = [];
       foreach (new DirectoryIterator($language_dir) as $file) {
         $matches = NULL;
         if (!preg_match('#^lang_(\w+)\.php$#', $file->getFilename(), $matches)) {
@@ -113,13 +115,18 @@ class UseBBInfo implements UseBBInfoInterface {
         require $file->getPathname();
         ob_end_clean();
 
-        $this->languages[$language] = [
+        $languages[$language] = [
           'language_code' => isset($lang['language_code']) ? strtolower($lang['language_code']) : self::DEFAULT_LANGCODE,
           'character_encoding' => isset($lang['character_encoding']) ? strtoupper($lang['character_encoding']) : self::DEFAULT_ENCODING,
           'text_direction' => isset($lang['text_direction']) ? strtolower($lang['text_direction']) : self::DEFAULT_TEXT_DIRECTION,
         ];
         unset($lang);
       }
+
+      if (empty($languages)) {
+        throw new MissingLanguagesException('No language files found in the UseBB path.');
+      }
+      $this->languages = $languages;
     }
     return $this->languages;
   }

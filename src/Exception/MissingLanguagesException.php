@@ -1,7 +1,7 @@
 <?php
 /**
  * @file
- * Contains \Drupal\usebb2drupal\Exception\MissingDatabaseTablesException.
+ * Contains \Drupal\usebb2drupal\Exception\MissingLanguagesException.
  */
 
 namespace Drupal\usebb2drupal\Exception;
@@ -9,6 +9,6 @@ namespace Drupal\usebb2drupal\Exception;
 use \Exception;
 
 /**
- * Exception upon wrong table prefix or missing database tables.
+ * Exception upon missing language files.
  */
-class MissingDatabaseTablesException extends Exception { }
+class MissingLanguagesException extends Exception { }
