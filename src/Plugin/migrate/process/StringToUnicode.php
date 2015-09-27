@@ -8,11 +8,12 @@
 namespace Drupal\usebb2drupal\Plugin\migrate\process;
 
 use Drupal\Core\Plugin\ContainerFactoryPluginInterface;
+use Symfony\Component\DependencyInjection\ContainerInterface;
+use Drupal\usebb2drupal\UseBBInfoInterface;
 use Drupal\migrate\MigrateExecutableInterface;
 use Drupal\migrate\ProcessPluginBase;
 use Drupal\migrate\Row;
 use Drupal\Component\Utility\Unicode;
-use Drupal\usebb2drupal\UseBBInfoInterface;
 
 /**
  * Convert string with HTML entities to Unicode.
