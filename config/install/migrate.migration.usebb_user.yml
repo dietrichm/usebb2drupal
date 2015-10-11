@@ -3,7 +3,6 @@ label: UseBB users
 source:
   plugin: usebb_user
   constants:
-    preferred_langcode: en
     signature_format: forum_html
 process:
   uid: { }
@@ -14,7 +13,8 @@ process:
   access: last_pageview
   login: last_login
   status: active
-  preferred_langcode: 'constants/preferred_langcode'
+  langcode: language
+  preferred_langcode: language
   init: email
   signature:
     -

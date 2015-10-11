@@ -6,9 +6,6 @@ migrate.source.usebb_user:
       type: mapping
       label: 'Constants'
       mapping:
-        preferred_langcode:
-          type: string
-          label: 'Preferred langcode'
         signature_format:
           type: string
           label: 'Signature format'

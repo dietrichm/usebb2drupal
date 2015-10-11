@@ -34,6 +34,11 @@ class UseBBInfo implements UseBBInfoInterface {
    */
   public function __construct(StateInterface $state) {
     $this->sourcePath = $state->get('usebb2drupal.source_path');
+    if (empty($this->sourcePath)) {
+      // Avoid exception upon module installation.
+      return;
+    }
+
     $config_file = $this->sourcePath . '/config.php';
 
     // config.php must exist and be readable.
@@ -134,8 +139,19 @@ class UseBBInfo implements UseBBInfoInterface {
   /**
    * {@inheritdoc}
    */
+  public function getLanguageCode($language = NULL) {
+    if ($language === NULL) {
+      $language = $this->getConfig('language');
+    }
+    $languages = $this->getLanguages();
+    return isset($languages[$language]['language_code']) ? $languages[$language]['language_code'] : self::DEFAULT_LANGCODE;
+  }
+
+  /**
+   * {@inheritdoc}
+   */
   public function getEncoding($language = NULL) {
-    if ($language == NULL) {
+    if ($language === NULL) {
       $language = $this->getConfig('language');
     }
     $languages = $this->getLanguages();

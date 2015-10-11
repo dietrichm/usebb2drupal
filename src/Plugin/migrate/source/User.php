@@ -7,8 +7,14 @@
 
 namespace Drupal\usebb2drupal\Plugin\migrate\source;
 
-use Drupal\migrate\Row;
+use Drupal\Core\Plugin\ContainerFactoryPluginInterface;
+use Drupal\Core\State\StateInterface;
+use Drupal\migrate\Entity\MigrationInterface;
 use Drupal\migrate\Plugin\migrate\source\SqlBase;
+use Drupal\migrate\Row;
+use Symfony\Component\DependencyInjection\ContainerInterface;
+use Drupal\language\Entity\ConfigurableLanguage;
+use Drupal\usebb2drupal\UseBBInfoInterface;
 
 /**
  * UseBB users source from database.
@@ -17,7 +23,34 @@ use Drupal\migrate\Plugin\migrate\source\SqlBase;
  *   id = "usebb_user"
  * )
  */
-class User extends SqlBase {
+class User extends SqlBase implements ContainerFactoryPluginInterface {
+
+  /**
+   * @var \Drupal\usebb2drupal\UseBBInfoInterface
+   */
+  protected $info;
+
+  /**
+   * {@inheritdoc}
+   */
+  public function __construct(array $configuration, $plugin_id, $plugin_definition, MigrationInterface $migration, StateInterface $state, UseBBInfoInterface $info) {
+    parent::__construct($configuration, $plugin_id, $plugin_definition, $migration, $state);
+    $this->info = $info;
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public static function create(ContainerInterface $container, array $configuration, $plugin_id, $plugin_definition, MigrationInterface $migration = NULL) {
+    return new static(
+      $configuration,
+      $plugin_id,
+      $plugin_definition,
+      $migration,
+      $container->get('state'),
+      $container->get('usebb2drupal.info')
+    );
+  }
 
   /**
    * {@inheritdoc}
@@ -36,6 +69,7 @@ class User extends SqlBase {
         'banned',
         'last_login',
         'last_pageview',
+        'language',
         'timezone',
         'real_name',
         'signature',
@@ -75,6 +109,14 @@ class User extends SqlBase {
     else {
       $row->setSourceProperty('birthday', NULL);
     }
+    // Language name to langcode.
+    $langcode = $this->info->getLanguageCode($row->getSourceProperty('language'));
+    $row->setSourceProperty('language', $langcode);
+    // Create the language if not already created.
+    if (!($language = entity_load('configurable_language', $langcode))) {
+      $language = ConfigurableLanguage::createFromLangcode($langcode);
+    }
+    $language->save();
     return parent::prepareRow($row);
   }
 
@@ -94,6 +136,7 @@ class User extends SqlBase {
       'banned' => $this->t('Banned status.'),
       'last_login' => $this->t('Last login date.'),
       'last_pageview' => $this->t('Last page view date.'),
+      'language' => $this->t('Language.'),
       'timezone' => $this->t('Timezone.'),
       'real_name' => $this->t('Real name.'),
       'signature' => $this->t('Signature.'),

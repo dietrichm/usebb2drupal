@@ -59,6 +59,16 @@ interface UseBBInfoInterface {
   public function getLanguages();
 
   /**
+   * Get the language code for a language or the default one.
+   *
+   * @param string $language
+   *   Language name (optional)
+   * @return string
+   *   Language code
+   */
+  public function getLanguageCode($language = NULL);
+
+  /**
    * Get the encoding for a language or the default one.
    *
    * @param string $language
