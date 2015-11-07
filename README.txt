@@ -3,7 +3,7 @@ INTRODUCTION
 
 UseBB2Drupal extends upon the core migrate module to provide migration from
 legacy UseBB 1 forums to Drupal 8. It converts users, categories, forums,
-topics and posts without overwriting existing Drupal content.
+topics, posts and IP address bans without overwriting existing Drupal content.
 
 
 INSTALLATION
@@ -50,8 +50,8 @@ FAQ
 
 Q: What UseBB data is (currently) not migrated?
 
-A: User ranks, avatars, subscriptions, bad words, username/email/IP address
-   bans, forum access permissions, moderator permissions, and smilies.
+A: User ranks, avatars, subscriptions, bad words, username/email bans, forum
+   access permissions, moderator permissions, and smilies.
    Specific UseBB user and global board settings are not migrated, since not
    all UseBB functionality is being replicated in Drupal. Once more contributed
    modules are released, some of this functionality may become available with
@@ -64,6 +64,11 @@ A: All BBCode is converted to HTML with a custom text format 'Forum HTML'.
    tags with at least 12pt are translated to h2 elements, leaving but one
    custom text size (for now).
 
+Q: Why do I need to specify the full path to the UseBB installation?
+
+A: UseBB source files are being read to deduce enabled languages and board
+   configuration. IP address bans are not migrated whenever IP address banning
+   has been disabled in UseBB.
 
 MAINTAINERS
 -----------

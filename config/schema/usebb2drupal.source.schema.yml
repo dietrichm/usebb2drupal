@@ -102,3 +102,7 @@ migrate.source.usebb_post:
         status:
           type: integer
           label: 'Status'
+
+migrate.source.usebb_ban:
+  type: migrate_source_sql
+  label: 'UseBB ban'

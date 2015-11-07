@@ -1,0 +1,8 @@
+id: usebb_ban
+label: UseBB bans
+source:
+  plugin: usebb_ban
+process:
+  ip: ip_addr
+destination:
+  plugin: blocked_ip

@@ -10,7 +10,6 @@ namespace Drupal\usebb2drupal\Form;
 use Drupal\Core\Form\FormBase;
 use Drupal\Core\Form\FormStateInterface;
 use Drupal\Component\Utility\Unicode;
-use Drupal\usebb2drupal\Utilities\UseBBInfo;
 use Drupal\usebb2drupal\Exception\InvalidSourcePathException;
 use Drupal\usebb2drupal\Exception\InvalidConfigFileException;
 use Drupal\usebb2drupal\Exception\MissingDatabaseTablesException;
@@ -63,7 +62,7 @@ class MigrateForm extends FormBase {
     ];
 
     $form['actions'] = [
-      '#type' => 'actions'
+      '#type' => 'actions',
     ];
     $form['actions']['submit'] = [
       '#type' => 'submit',
@@ -116,6 +115,12 @@ class MigrateForm extends FormBase {
           'usebb_topic',
           'usebb_post',
         ];
+        if (\Drupal::service('usebb2drupal.info')->getConfig('enable_ip_bans')) {
+          $migration_list[] = 'usebb_ban';
+        }
+        else {
+          drupal_set_message(t('Since IP address banning is disabled in the UseBB configuration, no IP address bans have been migrated.'));
+        }
         $form_state->setRedirect('forum.overview');
         break;
 
