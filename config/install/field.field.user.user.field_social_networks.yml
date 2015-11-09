@@ -3,6 +3,8 @@ status: true
 dependencies:
   config:
     - field.storage.user.field_social_networks
+  module:
+    - user
 id: user.user.field_social_networks
 field_name: field_social_networks
 entity_type: user
@@ -18,5 +20,4 @@ default_value:
     value: ''
 default_value_callback: ''
 settings: {  }
-third_party_settings: {  }
 field_type: string

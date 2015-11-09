@@ -5,6 +5,7 @@ dependencies:
     - field.storage.user.field_websites
   module:
     - link
+    - user
 id: user.user.field_websites
 field_name: field_websites
 entity_type: user
@@ -18,5 +19,4 @@ default_value_callback: ''
 settings:
   link_type: 16
   title: 1
-third_party_settings: {  }
 field_type: link

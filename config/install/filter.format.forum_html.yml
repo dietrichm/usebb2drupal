@@ -1,9 +1,11 @@
-format: forum_html
-name: 'Forum HTML'
+langcode: en
 status: true
+dependencies:
+  module:
+    - editor
+name: 'Forum HTML'
+format: forum_html
 weight: 0
-roles:
-  - authenticated
 filters:
   filter_html:
     id: filter_html
@@ -45,7 +47,3 @@ filters:
     weight: 0
     settings:
       filter_url_length: 72
-langcode: en
-dependencies:
-  module:
-    - editor

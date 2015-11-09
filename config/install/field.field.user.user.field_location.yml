@@ -3,6 +3,8 @@ status: true
 dependencies:
   config:
     - field.storage.user.field_location
+  module:
+    - user
 id: user.user.field_location
 field_name: field_location
 entity_type: user
@@ -16,5 +18,4 @@ default_value:
     value: ''
 default_value_callback: ''
 settings: {  }
-third_party_settings: {  }
 field_type: string

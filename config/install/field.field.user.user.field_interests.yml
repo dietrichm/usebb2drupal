@@ -3,6 +3,8 @@ status: true
 dependencies:
   config:
     - field.storage.user.field_interests
+  module:
+    - user
 id: user.user.field_interests
 field_name: field_interests
 entity_type: user
@@ -16,5 +18,4 @@ default_value:
     value: ''
 default_value_callback: ''
 settings: {  }
-third_party_settings: {  }
 field_type: string
