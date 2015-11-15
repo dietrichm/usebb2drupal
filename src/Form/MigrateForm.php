@@ -123,12 +123,6 @@ class MigrateForm extends FormBase {
           'usebb_topic',
           'usebb_post',
         ];
-        if (\Drupal::service('usebb2drupal.info')->getConfig('enable_ip_bans')) {
-          $migration_list[] = 'usebb_ban';
-        }
-        else {
-          drupal_set_message(t('Since IP address banning is disabled in the UseBB configuration, no IP address bans have been migrated.'));
-        }
         $form_state->setRedirect('forum.overview');
         break;
 
@@ -140,6 +134,14 @@ class MigrateForm extends FormBase {
         ];
         $form_state->setRedirect('entity.user.collection');
     }
+
+    if (\Drupal::service('usebb2drupal.info')->getConfig('enable_ip_bans')) {
+      $migration_list[] = 'usebb_ban';
+    }
+    else {
+      drupal_set_message(t('Since IP address banning is disabled in the UseBB configuration, no IP address bans have been migrated.'));
+    }
+
     module_load_include('inc', 'usebb2drupal', 'usebb2drupal.batch');
     $batch = usebb2drupal_migrate_batch_build($migration_list);
     batch_set($batch);
