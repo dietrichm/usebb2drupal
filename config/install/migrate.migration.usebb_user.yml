@@ -16,7 +16,7 @@ process:
   langcode: language
   preferred_langcode: language
   init: email
-  signature:
+  'signature/value':
     -
       plugin: skip_on_empty
       method: process
@@ -25,10 +25,7 @@ process:
       plugin: usebb_bbcode_to_html
     -
       plugin: usebb_string_to_unicode
-    -
-      plugin: usebb_truncate_text
-      length: 255
-  signature_format: 'constants/signature_format'
+  'signature/format': 'constants/signature_format'
   timezone:
     plugin: usebb_timezone
     source: timezone

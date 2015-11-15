@@ -43,6 +43,14 @@ class MigrateForm extends FormBase {
       '#suffix' => '</p>',
     ];
 
+    if (!\Drupal::moduleHandler()->moduleExists('signature')) {
+      $form['signatures'] = [
+        '#markup' => $this->t('To migrate user signatures, download and enable the <a href=":url">signature module</a> <em>before</em> starting the migration.', [':url' => 'https://www.drupal.org/project/signature']),
+        '#prefix' => '<p>',
+        '#suffix' => '</p>',
+      ];
+    }
+
     $form['migrate_types'] = [
       '#type' => 'radios',
       '#title' => $this->t('Migrate'),
