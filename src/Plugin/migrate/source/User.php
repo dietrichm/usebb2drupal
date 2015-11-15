@@ -113,10 +113,9 @@ class User extends SqlBase implements ContainerFactoryPluginInterface {
     $langcode = $this->info->getLanguageCode($row->getSourceProperty('language'));
     $row->setSourceProperty('language', $langcode);
     // Create the language if not already created.
-    if (!($language = entity_load('configurable_language', $langcode))) {
-      $language = ConfigurableLanguage::createFromLangcode($langcode);
+    if (!entity_load('configurable_language', $langcode)) {
+      ConfigurableLanguage::createFromLangcode($langcode)->save();
     }
-    $language->save();
     return parent::prepareRow($row);
   }
 
