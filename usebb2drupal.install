@@ -1,0 +1,93 @@
+<?php
+
+/**
+ * Implements hook_install().
+ */
+function usebb2drupal_install() {
+  $fields = [
+    'field_birthday' => [
+      'form_display' => [
+        'type' => 'datetime_default',
+      ],
+      'display' => [
+        'type' => 'datetime_default',
+        'label' => 'inline',
+        'settings' => [
+          'format_type' => 'html_date',
+        ],
+      ],
+      'weight' => 1,
+    ],
+    'field_interests' => [
+      'form_display' => [
+        'type' => 'string_textfield',
+      ],
+      'display' => [
+        'type' => 'string',
+        'label' => 'above',
+      ],
+      'weight' => 4,
+    ],
+    'field_location' => [
+      'form_display' => [
+        'type' => 'string_textfield',
+      ],
+      'display' => [
+        'type' => 'string',
+        'label' => 'inline',
+      ],
+      'weight' => 2,
+    ],
+    'field_occupation' => [
+      'form_display' => [
+        'type' => 'string_textfield',
+      ],
+      'display' => [
+        'type' => 'string',
+        'label' => 'inline',
+      ],
+      'weight' => 3,
+    ],
+    'field_real_name' => [
+      'form_display' => [
+        'type' => 'string_textfield',
+      ],
+      'display' => [
+        'type' => 'string',
+        'label' => 'inline',
+      ],
+      'weight' => 0,
+    ],
+    'field_social_networks' => [
+      'form_display' => [
+        'type' => 'string_textfield',
+      ],
+      'display' => [
+        'type' => 'string',
+        'label' => 'above',
+      ],
+      'weight' => 6,
+    ],
+    'field_websites' => [
+      'form_display' => [
+        'type' => 'link_default',
+      ],
+      'display' => [
+        'type' => 'link',
+        'label' => 'above',
+      ],
+      'weight' => 5,
+    ],
+  ];
+
+  $form_display = entity_get_form_display('user', 'user', 'default');
+  $display = entity_get_display('user', 'user', 'default');
+  foreach ($fields as $field_name => $components) {
+    // Set weight high enough to appear grouped below existing fields.
+    $weight = ['weight' => $components['weight'] + 100];
+    $form_display->setComponent($field_name, $components['form_display'] + $weight);
+    $display->setComponent($field_name, $components['display'] + $weight);
+  }
+  $form_display->save();
+  $display->save();
+}
