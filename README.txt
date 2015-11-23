@@ -26,7 +26,7 @@ contrib signature module, found at https://www.drupal.org/project/signature.
 
 Currently, the migration process has not been tested with drush, but should
 work fine by specifying a manifest file as described at
-https://www.drupal.org/node/2257723 and setting the state variable
+https://www.drupal.org/node/2350651 and setting the state variable
 usebb2drupal.source_path to UseBB's installation path.
 
 
