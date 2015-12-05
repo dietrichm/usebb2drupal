@@ -25,13 +25,13 @@ class CombineFields extends ProcessPluginBase {
    */
   public function transform($value, MigrateExecutableInterface $migrate_executable, Row $row, $destination_property) {
     $fields = $this->configuration['fields'];
-    return array_filter(array_map(function($key) use($fields, $row) {
+    return array_values(array_filter(array_map(function($key) use($fields, $row) {
       $value = $row->getSourceProperty($key);
       if (empty($value)) {
         return NULL;
       }
       return ['value' => sprintf('%s: %s', $fields[$key], $value)];
-    }, array_keys($fields)));
+    }, array_keys($fields))));
   }
 
 }
