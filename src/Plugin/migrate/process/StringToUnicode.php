@@ -25,6 +25,8 @@ use Drupal\Component\Utility\Unicode;
 class StringToUnicode extends ProcessPluginBase implements ContainerFactoryPluginInterface {
 
   /**
+   * UseBB info service.
+   *
    * @var \Drupal\usebb2drupal\UseBBInfoInterface
    */
   protected $info;
@@ -33,13 +35,13 @@ class StringToUnicode extends ProcessPluginBase implements ContainerFactoryPlugi
    * Constructs a StringToUnicode plugin.
    *
    * @param array $configuration
-   *  The plugin configuration.
+   *   The plugin configuration.
    * @param string $plugin_id
-   *  The plugin ID.
+   *   The plugin ID.
    * @param mixed $plugin_definition
-   *  The plugin definition.
+   *   The plugin definition.
    * @param \Drupal\usebb2drupal\UseBBInfoInterface $info
-   *  The UseBB info service.
+   *   The UseBB info service.
    */
   public function __construct(array $configuration, $plugin_id, array $plugin_definition, UseBBInfoInterface $info) {
     parent::__construct($configuration, $plugin_id, $plugin_definition);
