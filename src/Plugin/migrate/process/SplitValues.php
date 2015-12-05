@@ -25,7 +25,7 @@ class SplitValues extends ProcessPluginBase {
    */
   public function transform($value, MigrateExecutableInterface $migrate_executable, Row $row, $destination_property) {
     return array_map(function($value) {
-      return ['value' => $value];
+      return ['value' => trim($value)];
     }, preg_split('#\s*,\s*#', $value));
   }
 
