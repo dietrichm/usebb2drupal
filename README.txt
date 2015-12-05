@@ -63,6 +63,16 @@ A: UseBB source files are being read to deduce enabled languages and board
    configuration. IP address bans are not migrated whenever IP address banning
    has been disabled in UseBB.
 
+
+DEVELOPING
+----------
+
+Unit tests have been written for the Migrate process plugins. Run them using
+
+  cd core
+  ../vendor/phpunit/phpunit/phpunit --group usebb2drupal
+
+
 MAINTAINERS
 -----------
 
