@@ -142,8 +142,16 @@ class MigrateForm extends FormBase {
       drupal_set_message(t('Since IP address banning is disabled in the UseBB configuration, no IP address bans have been migrated.'));
     }
 
-    module_load_include('inc', 'usebb2drupal', 'usebb2drupal.batch');
-    $batch = usebb2drupal_migrate_batch_build($migration_list);
+    $batch = [
+      'title' => t('Migrating UseBB'),
+      'operations' => array_map(function($migration_id) {
+        return [
+          ['Drupal\usebb2drupal\MigrateBatch', 'run'],
+          [$migration_id],
+        ];
+      }, $migration_list),
+      'finished' => ['Drupal\usebb2drupal\MigrateBatch', 'finished'],
+    ];
     batch_set($batch);
   }
 
