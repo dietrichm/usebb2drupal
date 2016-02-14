@@ -24,11 +24,6 @@ settings:
             - DrupalLink
             - DrupalUnlink
         -
-          name: Lists
-          items:
-            - BulletedList
-            - NumberedList
-        -
           name: Media
           items:
             - Blockquote
@@ -41,7 +36,7 @@ settings:
     stylescombo:
       styles: ''
 image_upload:
-  status: true
+  status: false
   scheme: public
   directory: inline-images
   max_size: ''
