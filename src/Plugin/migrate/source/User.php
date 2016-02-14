@@ -116,6 +116,15 @@ class User extends SqlBase implements ContainerFactoryPluginInterface {
     if (!entity_load('configurable_language', $langcode)) {
       ConfigurableLanguage::createFromLangcode($langcode)->save();
     }
+    // Roles.
+    $roles = [
+      ['target_id' => 'migrated_usebb_user'],
+    ];
+    switch ($row->getSourceProperty('level')) {
+      case 3:
+        $roles[] = ['target_id' => 'administrator'];
+    }
+    $row->setSourceProperty('roles', $roles);
     return parent::prepareRow($row);
   }
 

@@ -1,0 +1,12 @@
+langcode: en
+status: true
+dependencies: {  }
+id: migrated_usebb_user
+label: 'Migrated UseBB user'
+weight: 3
+is_admin: null
+permissions:
+  - 'use text format forum_html'
+  - 'create forum content'
+  - 'edit own forum content'
+  - 'edit own comments'
