@@ -6,7 +6,11 @@ source:
     signature_format: forum_html
 process:
   uid: { }
-  name: name
+  name:
+    plugin: dedupe_entity
+    entity_type: user
+    field: name
+    source: name
   pass: passwd
   mail: email
   created: regdate
