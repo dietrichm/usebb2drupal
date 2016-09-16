@@ -10,7 +10,7 @@ namespace Drupal\usebb2drupal;
 use Drupal\migrate\Event\MigrateEvents;
 use Drupal\migrate\MigrateExecutable;
 use Drupal\migrate\MigrateMessage;
-use Drupal\migrate\Entity\MigrationInterface;
+use Drupal\migrate\Plugin\MigrationInterface;
 use Drupal\migrate\Event\MigratePostRowSaveEvent;
 use Drupal\migrate\Event\MigrateMapSaveEvent;
 
@@ -77,7 +77,7 @@ class MigrateBatch {
     static::$numProcessed = 0;
 
     $type = str_replace(['usebb_', '_'], ['', ' '], $migration_id);
-    $migration = entity_load('migration', $migration_id);
+    $migration = \Drupal::service('plugin.manager.migration')->createInstance($migration_id);
     $source = $migration->getSourcePlugin();
     if (empty($context['sandbox'])) {
       $context['sandbox']['progress'] = 0;

@@ -5,6 +5,7 @@ package: Migrate
 core: 8.x
 dependencies:
   - migrate
+  - migrate_drupal
   - forum
   - language
   - ban
