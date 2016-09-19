@@ -78,4 +78,4 @@ MAINTAINERS
 
 Current maintainers:
 
-  * Dietrich Moerman (DietrichM) - https://www.drupal.org/u/dietrichm
+  * Dietrich Moerman (dietr_ch) - https://www.drupal.org/u/dietr_ch
