@@ -1,10 +1,5 @@
 <?php
 
-/**
- * @file
- * Contains \Drupal\usebb2drupal\Plugin\migrate\process\CombineFields.
- */
-
 namespace Drupal\usebb2drupal\Plugin\migrate\process;
 
 use Drupal\migrate\MigrateExecutableInterface;

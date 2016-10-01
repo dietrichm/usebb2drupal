@@ -1,8 +1,4 @@
 <?php
-/**
- * @file
- * Contains \Drupal\usebb2drupal\Exception\InvalidConfigFileException.
- */
 
 namespace Drupal\usebb2drupal\Exception;
 

@@ -1,8 +1,4 @@
 <?php
-/**
- * @file
- * Contains \Drupal\usebb2drupal\Exception\MissingDatabaseTablesException.
- */
 
 namespace Drupal\usebb2drupal\Exception;
 

@@ -1,10 +1,5 @@
 <?php
 
-/**
- * @file
- * Contains \Drupal\Tests\usebb2drupal\Unit\Plugin\migrate\process\SplitValuesTest.
- */
-
 namespace Drupal\Tests\usebb2drupal\Unit\Plugin\migrate\process;
 
 use Drupal\usebb2drupal\Plugin\migrate\process\SplitValues;

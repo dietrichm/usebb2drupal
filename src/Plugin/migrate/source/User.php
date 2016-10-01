@@ -1,10 +1,5 @@
 <?php
 
-/**
- * @file
- * Contains \Drupal\usebb2drupal\Plugin\migrate\source\User.
- */
-
 namespace Drupal\usebb2drupal\Plugin\migrate\source;
 
 use Drupal\Core\Plugin\ContainerFactoryPluginInterface;

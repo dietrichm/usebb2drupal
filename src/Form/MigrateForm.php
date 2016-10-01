@@ -1,10 +1,5 @@
 <?php
 
-/**
- * @file
- * Contains \Drupal\usebb2drupal\Form\MigrateForm.
- */
-
 namespace Drupal\usebb2drupal\Form;
 
 use Drupal\Core\Form\FormBase;

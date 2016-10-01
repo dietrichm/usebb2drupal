@@ -1,8 +1,4 @@
 <?php
-/**
- * @file
- * Contains \Drupal\usebb2drupal\Exception\MissingLanguagesException.
- */
 
 namespace Drupal\usebb2drupal\Exception;
 

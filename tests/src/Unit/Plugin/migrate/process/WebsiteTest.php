@@ -1,10 +1,5 @@
 <?php
 
-/**
- * @file
- * Contains \Drupal\Tests\usebb2drupal\Unit\Plugin\migrate\process\WebsiteTest.
- */
-
 namespace Drupal\Tests\usebb2drupal\Unit\Plugin\migrate\process;
 
 use Drupal\usebb2drupal\Plugin\migrate\process\Website;

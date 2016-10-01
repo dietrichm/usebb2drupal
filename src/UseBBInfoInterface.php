@@ -1,10 +1,5 @@
 <?php
 
-/**
- * @file
- * Contains \Drupal\usebb2drupal\UseBBInfoInterface.
- */
-
 namespace Drupal\usebb2drupal;
 
 use Drupal\Core\State\StateInterface;

@@ -1,10 +1,5 @@
 <?php
 
-/**
- * @file
- * Contains \Drupal\usebb2drupal\Plugin\migrate\source\Forum.
- */
-
 namespace Drupal\usebb2drupal\Plugin\migrate\source;
 
 use Drupal\migrate\Row;

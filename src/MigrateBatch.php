@@ -1,10 +1,5 @@
 <?php
 
-/**
- * @file
- * Contains \Drupal\usebb2drupal\MigrateBatch.
- */
-
 namespace Drupal\usebb2drupal;
 
 use Drupal\migrate\Event\MigrateEvents;
