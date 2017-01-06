@@ -8,11 +8,13 @@ use Drupal\Core\State\StateInterface;
  * UseBB info service interface.
  */
 interface UseBBInfoInterface {
+
   /**
    * Construct a UseBB info service.
    *
    * @param \Drupal\Core\State\StateInterface $state
    *   The state service.
+   *
    * @throw \Drupal\usebb2drupal\Exception\InvalidSourcePathException
    *   When the source path is invalid.
    * @throw \Drupal\usebb2drupal\Exception\InvalidConfigFileException
@@ -25,6 +27,7 @@ interface UseBBInfoInterface {
    *
    * @return \Drupal\Core\Database\Connection
    *   UseBB database connection
+   *
    * @throw \PDOException
    *   When a database connection could not be made.
    * @throw \Drupal\usebb2drupal\Exception\MissingDatabaseTablesException
@@ -36,9 +39,10 @@ interface UseBBInfoInterface {
    * Get a UseBB config value.
    *
    * @param string $key
-   *   Config key
+   *   Config key.
+   *
    * @return mixed
-   *   Config value
+   *   Config value.
    */
   public function getConfig($key);
 
@@ -48,6 +52,7 @@ interface UseBBInfoInterface {
    * @return array
    *   (Full) language name to language info (character_encoding, language_code,
    *   text_direction).
+   *
    * @throws \Drupal\usebb2drupal\Exception\MissingLanguagesException
    *   When the language files are missing.
    */
@@ -57,7 +62,8 @@ interface UseBBInfoInterface {
    * Get the language code for a language or the default one.
    *
    * @param string $language
-   *   Language name (optional)
+   *   Language name (optional).
+   *
    * @return string
    *   Language code
    */
@@ -67,9 +73,30 @@ interface UseBBInfoInterface {
    * Get the encoding for a language or the default one.
    *
    * @param string $language
-   *   Language name (optional)
+   *   Language name (optional).
+   *
    * @return string
    *   Encoding
    */
   public function getEncoding($language = NULL);
+
+  /**
+   * Get public URLs.
+   *
+   * @return array
+   *   Public forum URLs.
+   */
+  public function getPublicUrls();
+
+  /**
+   * Get the topic ID that contains the post.
+   *
+   * @param int $id
+   *   Post ID.
+   *
+   * @return int|false
+   *   The topic ID containing the post or FALSE.
+   */
+  public function getTopicFromPost($id);
+
 }

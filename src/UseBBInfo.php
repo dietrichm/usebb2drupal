@@ -23,6 +23,7 @@ class UseBBInfo implements UseBBInfoInterface {
   protected $database;
   protected $config;
   protected $languages;
+  protected $publicUrls;
 
   /**
    * {@inheritdoc}
@@ -58,6 +59,8 @@ class UseBBInfo implements UseBBInfoInterface {
 
     $this->databaseConfig = $dbs;
     $this->config = $conf;
+
+    $this->publicUrls = $state->get('usebb2drupal.public_urls', []);
   }
 
   /**
@@ -152,4 +155,24 @@ class UseBBInfo implements UseBBInfoInterface {
     $languages = $this->getLanguages();
     return isset($languages[$language]['character_encoding']) ? $languages[$language]['character_encoding'] : self::DEFAULT_ENCODING;
   }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function getPublicUrls() {
+    return $this->publicUrls;
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function getTopicFromPost($id) {
+    return $this->getDatabase()
+      ->select('posts', 'p')
+      ->fields('p', ['topic_id'])
+      ->condition('p.id', $id)
+      ->execute()
+      ->fetchField();
+  }
+
 }

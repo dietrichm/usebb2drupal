@@ -5,6 +5,7 @@ namespace Drupal\usebb2drupal\Form;
 use Drupal\Core\Form\FormBase;
 use Drupal\Core\Form\FormStateInterface;
 use Drupal\Component\Utility\Unicode;
+use Drupal\Component\Utility\UrlHelper;
 use Drupal\usebb2drupal\Exception\InvalidSourcePathException;
 use Drupal\usebb2drupal\Exception\InvalidConfigFileException;
 use Drupal\usebb2drupal\Exception\MissingDatabaseTablesException;
@@ -33,7 +34,7 @@ class MigrateForm extends FormBase {
     }
 
     $form['intro'] = [
-      '#markup' => $this->t('Specify the contents to migrate and the path to the UseBB installation and click \'Start migration\'. Existing Drupal content and users will not be modified or removed.'),
+      '#markup' => $this->t("Specify the contents to migrate and the path to the UseBB installation and click 'Start migration'. Existing Drupal content and users will not be modified or removed. Additionally, provide the public URLs to the UseBB forum so that internal links can be translated."),
       '#prefix' => '<p>',
       '#suffix' => '</p>',
     ];
@@ -60,8 +61,17 @@ class MigrateForm extends FormBase {
       '#type' => 'textfield',
       '#title' => $this->t('UseBB installation directory'),
       '#required' => TRUE,
-      '#description' => $this->t('The absolute directory where UseBB is installed.'),
+      '#description' => $this->t('The absolute directory on the server where UseBB is installed.'),
       '#default_value' => \Drupal::state()->get('usebb2drupal.source_path'),
+    ];
+
+    $public_urls = \Drupal::state()->get('usebb2drupal.public_urls', []);
+    $form['public_urls'] = [
+      '#type' => 'textarea',
+      '#title' => $this->t('Public UseBB forum URLs'),
+      '#description' => $this->t('Public URLs on which the UseBB forum can or could be accessed. Only fill in the URL(s) to the forum index. This will correct internal URLs in forum descriptions, topics, posts and user signatures to the new Drupal URLs. Leaving this empty disables the URL correction.'),
+      '#default_value' => implode("\n", $public_urls),
+      '#rows' => !empty($public_urls) ? count($public_urls) + 1 : 3,
     ];
 
     $form['actions'] = [
@@ -102,18 +112,45 @@ class MigrateForm extends FormBase {
     catch (MissingLanguagesException $e) {
       $form_state->setError($form['source_path'], $this->t('The language files are not present in the UseBB directory.'));
     }
+
+    if ($public_urls = $form_state->getValue('public_urls')) {
+      foreach (preg_split('#[\r\n]+#', $public_urls) as $public_url) {
+        if (!UrlHelper::isValid($public_url, TRUE)) {
+          $form_state->setError($form['public_urls'], $this->t('The public URL %url is not a valid URL.', ['%url' => $public_url]));
+        }
+      }
+    }
   }
 
   /**
    * {@inheritdoc}
    */
   public function submitForm(array &$form, FormStateInterface $form_state) {
+    if ($public_urls = $form_state->getValue('public_urls')) {
+      $public_urls = array_unique(array_map(function ($url) {
+        $url = preg_replace('#index\.(html|php)$#', '', $url);
+        if (substr($url, -1) === '/') {
+          $url = substr($url, 0, -1);
+        }
+        return $url;
+      }, preg_split('#[\r\n]+#', $public_urls)));
+    }
+    else {
+      $public_urls = [];
+    }
+    \Drupal::state()->set('usebb2drupal.public_urls', $public_urls);
+
     switch ($form_state->getValue('migrate_types')) {
       case 'all':
         $migration_list = [
           'usebb_user',
           'usebb_user_contact',
           'usebb_category',
+          'usebb_forum',
+          'usebb_topic',
+          'usebb_post',
+        ];
+        $url_translation_migrations = [
           'usebb_forum',
           'usebb_topic',
           'usebb_post',
@@ -127,6 +164,7 @@ class MigrateForm extends FormBase {
           'usebb_user',
           'usebb_user_contact',
         ];
+        $url_translation_migrations = [];
         $form_state->setRedirect('entity.user.collection');
     }
 
@@ -139,7 +177,7 @@ class MigrateForm extends FormBase {
 
     $batch = [
       'title' => t('Migrating UseBB'),
-      'operations' => array_map(function($migration_id) {
+      'operations' => array_map(function ($migration_id) {
         return [
           ['Drupal\usebb2drupal\MigrateBatch', 'run'],
           [$migration_id],
@@ -147,6 +185,19 @@ class MigrateForm extends FormBase {
       }, $migration_list),
       'finished' => ['Drupal\usebb2drupal\MigrateBatch', 'finished'],
     ];
+
+    if (!empty($public_urls)) {
+      if (\Drupal::moduleHandler()->moduleExists('signature')) {
+        $url_translation_migrations[] = 'usebb_user';
+      }
+      foreach ($url_translation_migrations as $migration_id) {
+        $batch['operations'][] = [
+          ['Drupal\usebb2drupal\MigrateBatch', 'translateUrls'],
+          [$migration_id],
+        ];
+      }
+    }
+
     batch_set($batch);
   }
 

@@ -4,6 +4,7 @@ INTRODUCTION
 UseBB2Drupal extends upon the core migrate module to provide migration from
 legacy UseBB 1 forums to Drupal 8. It converts users, categories, forums,
 topics, posts and IP address bans without overwriting existing Drupal content.
+It also translates internal forum links to the new Drupal paths.
 
 
 INSTALLATION
@@ -21,8 +22,17 @@ There is no configuration to be made, but the migration can be started from
 admin/structure/forum/migrate-usebb. Specify UseBB's installation path and
 click 'Start migration'.
 
+If you want to convert internal links in forum descriptions, topics, posts and
+user signatures, you need to provide the public URLs on which the UseBB forum
+can or could be accessed in the past. Without the URL(s), the translation is
+disabled.
+
 For user signatures to be migrated, you must first download and install the
 contrib signature module, found at https://www.drupal.org/project/signature.
+
+Please test the migration on a private or local environment before executing
+it on a live website. All forums will become public, even when UseBB permissions
+defined otherwise.
 
 Currently, the migration process has not been tested with drush, but should
 work fine by specifying a manifest file as described at

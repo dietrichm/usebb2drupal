@@ -2,3 +2,6 @@ services:
   usebb2drupal.info:
     class: Drupal\usebb2drupal\UseBBInfo
     arguments: ['@state']
+  usebb2drupal.url_translator:
+    class: Drupal\usebb2drupal\UseBBUrlTranslator
+    arguments: ['@usebb2drupal.info', '@plugin.manager.migration', '@database', '@entity.query', '@entity_type.manager']

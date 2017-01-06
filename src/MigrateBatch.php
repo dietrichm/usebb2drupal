@@ -96,13 +96,25 @@ class MigrateBatch {
   }
 
   /**
+   * Translate internal UseBB URLs in a migrated content type.
+   *
+   * @param string $migration_id
+   *   Migration ID.
+   * @param array $context
+   *   Batch context array.
+   */
+  public static function translateUrls($migration_id, array &$context) {
+    \Drupal::service('usebb2drupal.url_translator')->execute($migration_id, $context);
+  }
+
+  /**
    * Implementation of the Batch API finished method.
    */
   public static function finished($success, $results, $operations, $elapsed) {
     if ($success) {
       drupal_set_message(t('Executed UseBB migrations for %types.', ['%types' => implode(', ', array_keys($results))]));
 
-      $with_errors = array_filter(array_keys($results), function($type) use($results) {
+      $with_errors = array_filter(array_keys($results), function ($type) use ($results) {
         return $results[$type] !== MigrationInterface::RESULT_COMPLETED;
       });
       if (count($with_errors)) {
