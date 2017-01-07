@@ -115,6 +115,7 @@ class UseBBUrlTranslator implements UseBBUrlTranslatorInterface {
    *   Field name containing URLs.
    */
   protected function updateEntity(EntityInterface $entity, $field_name) {
+    $entity->usebb_changed = clone $entity->changed;
     if (strpos($field_name, '.') !== FALSE) {
       list($field_name, $property) = explode('.', $field_name, 2);
       $value = $this->translateUrls($entity->$field_name->$property);
