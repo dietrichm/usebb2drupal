@@ -57,23 +57,26 @@ class UseBBUrlTranslator implements UseBBUrlTranslatorInterface {
       default:
         return;
     }
-    $storage = $this->entityTypeManager->getStorage($entity_type);
-    $query = $this->getQuery($entity_type, $field_name);
     if (empty($context['sandbox'])) {
-      $count_query = clone $query;
+      $context['sandbox']['entity_ids'] = $this->getQuery($entity_type, $field_name)->execute();
       $context['sandbox']['progress'] = 0;
-      $context['sandbox']['max'] = $count_query->count()->execute();
+      $context['sandbox']['max'] = count($context['sandbox']['entity_ids']);
     }
-    $query->range(0, 5);
-    $entity_ids = $query->execute();
-    if (empty($entity_ids)) {
+    if (empty($context['sandbox']['entity_ids'])) {
       $context['finished'] = 1;
       return;
     }
-    foreach ($storage->loadMultiple($entity_ids) as $entity) {
+    $storage = $this->entityTypeManager->getStorage($entity_type);
+    $processed = 0;
+    foreach ($storage->loadMultiple($context['sandbox']['entity_ids']) as $entity_id => $entity) {
       $this->updateEntity($entity, $field_name);
+      $processed++;
+      $context['sandbox']['progress']++;
+      unset($context['sandbox']['entity_ids'][$entity_id]);
+      if ($processed === 5) {
+        break;
+      }
     }
-    $context['sandbox']['progress'] += count($entity_ids);
     $context['finished'] = $context['sandbox']['progress'] / $context['sandbox']['max'];
   }
 
