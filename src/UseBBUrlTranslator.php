@@ -169,13 +169,12 @@ class UseBBUrlTranslator implements UseBBUrlTranslatorInterface {
       return 'forum/' . $id;
     }
     // Forum.
-    if ((preg_match('#^/forum\-([0-9]+)\.html?#', $path, $matches) || preg_match('#^/forum\.php\?id=([0-9]+)#', $path, $matches))
+    if ((preg_match('#^/forum\-([0-9]+)(\-[0-9]+)?\.html?#', $path, $matches) || preg_match('#^/forum\.php\?id=([0-9]+)(&page=[0-9]+)?#', $path, $matches))
         && ($id = $this->getMigratedId('forum', $matches[1]))) {
       return 'forum/' . $id;
     }
     // Topic.
-    // TODO: pages?
-    if ((preg_match('#^/topic\-([0-9]+)\.html?#', $path, $matches) || preg_match('#^/topic\.php\?id=([0-9]+)#', $path, $matches))
+    if ((preg_match('#^/topic\-([0-9]+)(\-[0-9]+)?\.html?#', $path, $matches) || preg_match('#^/topic\.php\?id=([0-9]+)(&page=[0-9]+)?#', $path, $matches))
         && ($id = $this->getMigratedId('topic', $matches[1]))) {
       return 'node/' . $id;
     }
