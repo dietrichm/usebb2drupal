@@ -111,10 +111,7 @@ class UseBBUrlTranslator implements UseBBUrlTranslatorInterface {
   }
 
   /**
-   * Alter the query to add a join upon the migration mapping tables.
-   *
-   * @param \Drupal\Core\Database\Query\AlterableInterface $query
-   *   Select query for loading entities.
+   * {@inheritdoc}
    */
   public function alterQuery(AlterableInterface $query) {
     $migration = $this->getMigrationInstance($query->getMetaData('usebb2drupal_migration'));

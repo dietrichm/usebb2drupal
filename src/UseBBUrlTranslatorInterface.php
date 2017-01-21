@@ -6,6 +6,7 @@ use Drupal\migrate\Plugin\MigrationPluginManagerInterface;
 use Drupal\Core\Entity\Query\QueryFactory;
 use Drupal\Core\Entity\EntityTypeManagerInterface;
 use Drupal\Core\Database\Connection;
+use Drupal\Core\Database\Query\AlterableInterface;
 
 /**
  * UseBB URL translator service interface.
@@ -37,5 +38,13 @@ interface UseBBUrlTranslatorInterface {
    *   Batch context array.
    */
   public function execute($migration_id, array &$context);
+
+  /**
+   * Alter the query to add a join upon the migration mapping tables.
+   *
+   * @param \Drupal\Core\Database\Query\AlterableInterface $query
+   *   Select query for loading entities.
+   */
+  public function alterQuery(AlterableInterface $query);
 
 }
