@@ -74,7 +74,7 @@ class UseBBUrlTranslator implements UseBBUrlTranslatorInterface {
       $processed++;
       $context['sandbox']['progress']++;
       unset($context['sandbox']['entity_ids'][$entity_id]);
-      if ($processed === 5) {
+      if ($processed === 15) {
         $context['message'] = t('Translating internal links in @type @progress of @max.', [
           '@type' => str_replace(['usebb_', '_'], ['', ' '], $migration_id),
           '@progress' => $context['sandbox']['progress'],
