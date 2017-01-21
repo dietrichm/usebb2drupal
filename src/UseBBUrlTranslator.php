@@ -214,11 +214,11 @@ class UseBBUrlTranslator implements UseBBUrlTranslatorInterface {
    */
   protected function getMigratedId($migration_id, $source_id) {
     $ids = $this->migrationManager->createInstance('usebb_' . $migration_id)
-      ->getIdMap()->lookupDestinationIds([(int) $source_id]);
-    if (empty($ids) || empty($ids[0])) {
+      ->getIdMap()->lookupDestinationId([(int) $source_id]);
+    if (empty($ids)) {
       return NULL;
     }
-    return (int) $ids[0][0];
+    return (int) reset($ids);
   }
 
 }
