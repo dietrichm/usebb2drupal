@@ -1,7 +1,13 @@
 <?php
 
+/**
+ * @file
+ * UseBB2Drupal module file.
+ */
+
 use Drupal\node\Entity\Node;
 use Drupal\comment\Entity\Comment;
+use Drupal\Core\Database\Query\AlterableInterface;
 
 /**
  * Implements hook_ENTITY_TYPE_presave() for node entities.
@@ -29,4 +35,11 @@ function usebb2drupal_comment_presave(Comment $comment) {
       $comment->hostname = $comment->usebb_hostname;
     }
   }
+}
+
+/**
+ * Implements hook_query_TAG_alter().
+ */
+function usebb2drupal_query_usebb2drupal_url_translator_alter(AlterableInterface $query) {
+  \Drupal::service('usebb2drupal.url_translator')->alterQuery($query);
 }

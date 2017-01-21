@@ -7,6 +7,7 @@ use Drupal\Core\Entity\Query\QueryFactory;
 use Drupal\Core\Entity\EntityTypeManagerInterface;
 use Drupal\Core\Entity\EntityInterface;
 use Drupal\Core\Database\Connection;
+use Drupal\Core\Database\Query\AlterableInterface;
 
 /**
  * UseBB URL translator service class.
@@ -58,7 +59,7 @@ class UseBBUrlTranslator implements UseBBUrlTranslatorInterface {
         return;
     }
     if (empty($context['sandbox'])) {
-      $context['sandbox']['entity_ids'] = $this->getQuery($entity_type, $field_name)->execute();
+      $context['sandbox']['entity_ids'] = $this->getQuery($migration_id, $entity_type, $field_name)->execute();
       $context['sandbox']['progress'] = 0;
       $context['sandbox']['max'] = count($context['sandbox']['entity_ids']);
     }
@@ -88,6 +89,8 @@ class UseBBUrlTranslator implements UseBBUrlTranslatorInterface {
   /**
    * Create a query against the database for contents with untranslated links.
    *
+   * @param string $migration_id
+   *   Migration ID.
    * @param string $entity_type
    *   Entity type.
    * @param string $field_name
@@ -96,14 +99,33 @@ class UseBBUrlTranslator implements UseBBUrlTranslatorInterface {
    * @return Drupal\Core\Entity\Query\QueryInterface
    *   Query.
    */
-  protected function getQuery($entity_type, $field_name) {
+  protected function getQuery($migration_id, $entity_type, $field_name) {
     $query = $this->queryFactory->get($entity_type);
     $group = $query->orConditionGroup();
     foreach ($this->info->getPublicUrls() as $url) {
       $group->condition($field_name, '%' . $this->database->escapeLike('<a href="' . $url) . '%', 'LIKE');
     }
-    $query->condition($group);
-    return $query;
+    return $query->condition($group)
+      ->addTag('usebb2drupal_url_translator')
+      ->addMetaData('usebb2drupal_migration', $migration_id);
+  }
+
+  /**
+   * Alter the query to add a join upon the migration mapping tables.
+   *
+   * @param \Drupal\Core\Database\Query\AlterableInterface $query
+   *   Select query for loading entities.
+   */
+  public function alterQuery(AlterableInterface $query) {
+    $migration = $this->getMigrationInstance($query->getMetaData('usebb2drupal_migration'));
+    $id_map_table = $migration->getIdMap()->mapTableName();
+    $destid = 1;
+    $join_condition = [];
+    foreach (array_keys($migration->getDestinationPlugin()->getIds()) as $destination_id) {
+      $field = $query->getFields()[$destination_id];
+      $join_condition[] = $field['table'] . '.' . $field['field'] . ' = migrate_map.destid' . $destid++;
+    }
+    $query->join($id_map_table, 'migrate_map', implode(' AND ', $join_condition));
   }
 
   /**
@@ -213,12 +235,29 @@ class UseBBUrlTranslator implements UseBBUrlTranslatorInterface {
    *   Migrated (destination) ID or NULL when not found.
    */
   protected function getMigratedId($migration_id, $source_id) {
-    $ids = $this->migrationManager->createInstance('usebb_' . $migration_id)
-      ->getIdMap()->lookupDestinationId([(int) $source_id]);
+    $ids = $this->getMigrationInstance('usebb_' . $migration_id)->getIdMap()
+      ->lookupDestinationId([(int) $source_id]);
     if (empty($ids)) {
       return NULL;
     }
     return (int) reset($ids);
+  }
+
+  /**
+   * Load a migration plugin instance.
+   *
+   * @param string $migration_id
+   *   Migration ID.
+   *
+   * @return \Drupal\migrate\Plugin\MigrationInterface
+   *   Migration plugin instance.
+   */
+  protected function getMigrationInstance($migration_id) {
+    static $instances = [];
+    if (!isset($instances[$migration_id])) {
+      $instances[$migration_id] = $this->migrationManager->createInstance($migration_id);
+    }
+    return $instances[$migration_id];
   }
 
 }
