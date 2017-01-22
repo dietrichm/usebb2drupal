@@ -15,8 +15,8 @@ Simply enable the module at the Extend page or use drush:
 $ drush en usebb2drupal
 
 
-CONFIGURATION
--------------
+CONFIGURATION/MIGRATION
+-----------------------
 
 There is no configuration to be made, but the migration can be started from
 admin/structure/forum/migrate-usebb. Specify UseBB's installation path and
@@ -33,11 +33,6 @@ contrib signature module, found at https://www.drupal.org/project/signature.
 Please test the migration on a private or local environment before executing
 it on a live website. All forums will become public, even when UseBB permissions
 defined otherwise.
-
-Currently, the migration process has not been tested with drush, but should
-work fine by specifying a manifest file as described at
-https://www.drupal.org/node/2350651 and setting the state variable
-usebb2drupal.source_path to UseBB's installation path.
 
 
 TROUBLESHOOTING
