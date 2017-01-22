@@ -1,6 +1,11 @@
 <?php
 
 /**
+ * @file
+ * UseBB2Drupal install file.
+ */
+
+/**
  * Implements hook_install().
  */
 function usebb2drupal_install() {
