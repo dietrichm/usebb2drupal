@@ -85,6 +85,7 @@ function usebb2drupal_install() {
     ],
   ];
 
+  // User fields.
   $form_display = entity_get_form_display('user', 'user', 'default');
   $display = entity_get_display('user', 'user', 'default');
   foreach ($fields as $field_name => $components) {
@@ -94,5 +95,15 @@ function usebb2drupal_install() {
     $display->setComponent($field_name, $components['display'] + $weight);
   }
   $form_display->save();
+  $display->save();
+
+  // Forum topic fields.
+  $display = entity_get_display('node', 'forum', 'default');
+  $display->setComponent('field_anonymous_name', [
+    'type' => 'string',
+    'label' => 'inline',
+    'weight' => -10,
+  ]);
+  $display->removeComponent('taxonomy_forums');
   $display->save();
 }

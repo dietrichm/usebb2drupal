@@ -2,7 +2,6 @@
 
 namespace Drupal\usebb2drupal\Plugin\migrate\source;
 
-use Drupal\migrate\Row;
 use Drupal\migrate\Plugin\migrate\source\SqlBase;
 
 /**
@@ -28,6 +27,7 @@ class Topic extends SqlBase {
       ])
       ->fields('p', [
         'poster_id',
+        'poster_guest',
         'content',
         'post_time',
         'post_edit_time',
@@ -51,6 +51,7 @@ class Topic extends SqlBase {
       'status_locked' => $this->t('Locked status.'),
       'status_sticky' => $this->t('Sticky status.'),
       'poster_id' => $this->t('User ID.'),
+      'poster_guest' => $this->t('Guest name.'),
       'content' => $this->t('Content.'),
       'post_time' => $this->t('Created date.'),
       'post_edit_time' => $this->t('Changed date.'),

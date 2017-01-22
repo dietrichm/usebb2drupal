@@ -23,6 +23,7 @@ process:
     -
       plugin: migration
       migration: usebb_user
+  'field_anonymous_name/value': poster_guest
   status: 'constants/status'
   created: post_time
   usebb_changed:
