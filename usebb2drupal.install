@@ -84,7 +84,7 @@ function usebb2drupal_install() {
   $display = entity_get_display('user', 'user', 'default');
   foreach ($fields as $field_name => $components) {
     // Set weight high enough to appear grouped below existing fields.
-    $weight = ['weight' => $components['weight'] + 100];
+    $weight = ['weight' => $components['weight'] + 50];
     $form_display->setComponent($field_name, $components['form_display'] + $weight);
     $display->setComponent($field_name, $components['display'] + $weight);
   }
