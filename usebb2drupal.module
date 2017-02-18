@@ -15,8 +15,13 @@ use Drupal\Core\Database\Query\AlterableInterface;
  * Set the changed timestamp to the imported one from UseBB.
  */
 function usebb2drupal_node_presave(Node $node) {
-  if ($node->bundle() === 'forum' && isset($node->usebb_changed)) {
-    $node->changed = $node->usebb_changed;
+  if ($node->bundle() === 'forum') {
+    if (isset($node->usebb_changed)) {
+      $node->changed = $node->usebb_changed;
+    }
+    if (isset($node->usebb_poster_id) && intval($node->usebb_poster_id) === 0) {
+      $node->uid = $node->usebb_poster_id;
+    }
   }
 }
 
