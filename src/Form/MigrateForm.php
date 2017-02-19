@@ -47,14 +47,27 @@ class MigrateForm extends FormBase {
       ];
     }
 
-    $form['migrate_types'] = [
+    $form['migrate_type'] = [
       '#type' => 'radios',
       '#title' => $this->t('Migrate'),
       '#options' => [
         'all' => $this->t('Structure, content and users.'),
+        'structure_content' => $this->t('Structure and content <strong>without</strong> users.'),
         'users' => $this->t('Users only.'),
       ],
       '#default_value' => 'all',
+    ];
+
+    $form['structure_content_info'] = [
+      '#type' => 'container',
+      'text' => [
+        '#markup' => $this->t('<strong>Notice:</strong> all topics and posts will be authored by Anonymous. Actual author info cannot be imported afterwards.'),
+      ],
+      '#states' => [
+        'visible' => [
+          ':input[name="migrate_type"]' => ['value' => 'structure_content'],
+        ],
+      ],
     ];
 
     $form['source_path'] = [
@@ -140,43 +153,48 @@ class MigrateForm extends FormBase {
     }
     \Drupal::state()->set('usebb2drupal.public_urls', $public_urls);
 
-    switch ($form_state->getValue('migrate_types')) {
-      case 'all':
-        $migration_list = [
-          'usebb_user',
-          'usebb_user_contact',
-          'usebb_category',
-          'usebb_forum',
-          'usebb_topic',
-          'usebb_post',
-        ];
-        $url_translation_migrations = [
-          'usebb_forum',
-          'usebb_topic',
-          'usebb_post',
-        ];
-        $form_state->setRedirect('forum.overview');
-        break;
+    $migrate_type = $form_state->getValue('migrate_type');
+    $migration_list = [];
+    $url_translation_migrations = [];
 
+    switch ($migrate_type) {
+      // Start off with user data.
+      case 'all':
       case 'users':
-      default:
-        $migration_list = [
-          'usebb_user',
-          'usebb_user_contact',
-        ];
-        $url_translation_migrations = [];
-        $form_state->setRedirect('entity.user.collection');
+        $migration_list[] = 'usebb_user';
+        $migration_list[] = 'usebb_user_contact';
+        if (\Drupal::moduleHandler()->moduleExists('signature')) {
+          $url_translation_migrations[] = 'usebb_user';
+        }
+        if ($migrate_type === 'users') {
+          // Stop here when only users are migrated.
+          $form_state->setRedirect('entity.user.collection');
+          break;
+        }
+
+      case 'structure_content':
+        // Add structure and content.
+        $migration_list[] = 'usebb_category';
+        $migration_list[] = 'usebb_forum';
+        $migration_list[] = 'usebb_topic';
+        $migration_list[] = 'usebb_post';
+        $url_translation_migrations[] = 'usebb_forum';
+        $url_translation_migrations[] = 'usebb_topic';
+        $url_translation_migrations[] = 'usebb_post';
+        $form_state->setRedirect('forum.overview');
     }
 
     if (\Drupal::service('usebb2drupal.info')->getConfig('enable_ip_bans')) {
       $migration_list[] = 'usebb_ban';
     }
     else {
-      drupal_set_message(t('Since IP address banning is disabled in the UseBB configuration, no IP address bans have been migrated.'));
+      drupal_set_message($this->t('Since IP address banning is disabled in the UseBB configuration, no IP address bans have been migrated.'));
     }
 
+    \Drupal::state()->set('usebb2drupal.migration_list', $migration_list);
+
     $batch = [
-      'title' => t('Migrating UseBB'),
+      'title' => $this->t('Migrating UseBB'),
       'operations' => array_map(function ($migration_id) {
         return [
           ['Drupal\usebb2drupal\MigrateBatch', 'run'],
@@ -187,9 +205,6 @@ class MigrateForm extends FormBase {
     ];
 
     if (!empty($public_urls)) {
-      if (\Drupal::moduleHandler()->moduleExists('signature')) {
-        $url_translation_migrations[] = 'usebb_user';
-      }
       foreach ($url_translation_migrations as $migration_id) {
         $batch['operations'][] = [
           ['Drupal\usebb2drupal\MigrateBatch', 'translateUrls'],

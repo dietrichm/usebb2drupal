@@ -72,4 +72,3 @@ destination:
 migration_dependencies:
   required:
     - usebb_forum
-    - usebb_user

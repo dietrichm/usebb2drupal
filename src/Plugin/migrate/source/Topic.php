@@ -9,7 +9,7 @@ namespace Drupal\usebb2drupal\Plugin\migrate\source;
  *   id = "usebb_topic"
  * )
  */
-class Topic extends UseBBSource {
+class Topic extends UserPosted {
 
   /**
    * {@inheritdoc}
@@ -35,7 +35,7 @@ class Topic extends UseBBSource {
       ]);
     $query->join('posts', 'p', 'p.id = t.first_post_id');
     $query->orderBy('t.id', 'ASC');
-    return $query;
+    return $this->addGuestInfo($query);
   }
 
   /**

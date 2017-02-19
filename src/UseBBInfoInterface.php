@@ -99,4 +99,23 @@ interface UseBBInfoInterface {
    */
   public function getTopicFromPost($id);
 
+  /**
+   * Get list of migration IDs.
+   *
+   * @return array
+   *   Migration list.
+   */
+  public function getMigrationList();
+
+  /**
+   * Is a source type migrated?
+   *
+   * @param string $type
+   *   Migration type without 'usebb_'.
+   *
+   * @return bool
+   *   Migrated.
+   */
+  public function isMigrated($type);
+
 }

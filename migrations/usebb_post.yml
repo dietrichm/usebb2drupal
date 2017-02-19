@@ -53,4 +53,3 @@ destination:
 migration_dependencies:
   required:
     - usebb_topic
-    - usebb_user

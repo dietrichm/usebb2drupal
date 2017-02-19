@@ -23,6 +23,7 @@ class UseBBInfo implements UseBBInfoInterface {
   protected $database;
   protected $config;
   protected $languages;
+  protected $migrationList;
   protected $publicUrls;
 
   /**
@@ -60,6 +61,7 @@ class UseBBInfo implements UseBBInfoInterface {
     $this->databaseConfig = $dbs;
     $this->config = $conf;
 
+    $this->migrationList = $state->get('usebb2drupal.migration_list');
     $this->publicUrls = $state->get('usebb2drupal.public_urls', []);
   }
 
@@ -173,6 +175,20 @@ class UseBBInfo implements UseBBInfoInterface {
       ->condition('p.id', $id)
       ->execute()
       ->fetchField();
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function getMigrationList() {
+    return $this->migrationList;
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function isMigrated($type) {
+    return in_array('usebb_' . $type, $this->migrationList);
   }
 
 }
