@@ -2,9 +2,6 @@
 
 namespace Drupal\usebb2drupal\Plugin\migrate\source;
 
-use Drupal\migrate\Row;
-use Drupal\migrate\Plugin\migrate\source\SqlBase;
-
 /**
  * UseBB forums source from database.
  *
@@ -12,7 +9,7 @@ use Drupal\migrate\Plugin\migrate\source\SqlBase;
  *   id = "usebb_forum"
  * )
  */
-class Forum extends SqlBase {
+class Forum extends UseBBSource {
 
   /**
    * {@inheritdoc}

@@ -2,8 +2,6 @@
 
 namespace Drupal\usebb2drupal\Plugin\migrate\source;
 
-use Drupal\migrate\Plugin\migrate\source\SqlBase;
-
 /**
  * UseBB posts source from database.
  *
@@ -11,7 +9,7 @@ use Drupal\migrate\Plugin\migrate\source\SqlBase;
  *   id = "usebb_post"
  * )
  */
-class Post extends SqlBase {
+class Post extends UseBBSource {
 
   /**
    * {@inheritdoc}

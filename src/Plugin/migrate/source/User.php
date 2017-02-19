@@ -2,14 +2,8 @@
 
 namespace Drupal\usebb2drupal\Plugin\migrate\source;
 
-use Drupal\Core\Plugin\ContainerFactoryPluginInterface;
-use Drupal\Core\State\StateInterface;
-use Drupal\migrate\Plugin\MigrationInterface;
-use Drupal\migrate\Plugin\migrate\source\SqlBase;
 use Drupal\migrate\Row;
-use Symfony\Component\DependencyInjection\ContainerInterface;
 use Drupal\language\Entity\ConfigurableLanguage;
-use Drupal\usebb2drupal\UseBBInfoInterface;
 
 /**
  * UseBB users source from database.
@@ -18,34 +12,7 @@ use Drupal\usebb2drupal\UseBBInfoInterface;
  *   id = "usebb_user"
  * )
  */
-class User extends SqlBase implements ContainerFactoryPluginInterface {
-
-  /**
-   * @var \Drupal\usebb2drupal\UseBBInfoInterface
-   */
-  protected $info;
-
-  /**
-   * {@inheritdoc}
-   */
-  public function __construct(array $configuration, $plugin_id, $plugin_definition, MigrationInterface $migration, StateInterface $state, UseBBInfoInterface $info) {
-    parent::__construct($configuration, $plugin_id, $plugin_definition, $migration, $state);
-    $this->info = $info;
-  }
-
-  /**
-   * {@inheritdoc}
-   */
-  public static function create(ContainerInterface $container, array $configuration, $plugin_id, $plugin_definition, MigrationInterface $migration = NULL) {
-    return new static(
-      $configuration,
-      $plugin_id,
-      $plugin_definition,
-      $migration,
-      $container->get('state'),
-      $container->get('usebb2drupal.info')
-    );
-  }
+class User extends UseBBSource {
 
   /**
    * {@inheritdoc}

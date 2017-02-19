@@ -2,9 +2,6 @@
 
 namespace Drupal\usebb2drupal\Plugin\migrate\source;
 
-use Drupal\migrate\Row;
-use Drupal\migrate\Plugin\migrate\source\SqlBase;
-
 /**
  * UseBB IP address bans source from database.
  *
@@ -12,7 +9,7 @@ use Drupal\migrate\Plugin\migrate\source\SqlBase;
  *   id = "usebb_ban"
  * )
  */
-class Ban extends SqlBase {
+class Ban extends UseBBSource {
 
   /**
    * {@inheritdoc}
