@@ -3,6 +3,7 @@
 namespace Drupal\usebb2drupal;
 
 use Drupal\Core\State\StateInterface;
+use Drupal\Core\Database\ConnectionNotDefinedException;
 use Drupal\Core\Database\Database;
 use Drupal\usebb2drupal\Exception\InvalidSourcePathException;
 use Drupal\usebb2drupal\Exception\InvalidConfigFileException;
@@ -20,7 +21,6 @@ class UseBBInfo implements UseBBInfoInterface {
 
   protected $sourcePath;
   protected $databaseConfig;
-  protected $database;
   protected $config;
   protected $languages;
   protected $migrationList;
@@ -69,7 +69,10 @@ class UseBBInfo implements UseBBInfoInterface {
    * {@inheritdoc}
    */
   public function getDatabase() {
-    if ($this->database == NULL) {
+    try {
+      $database = Database::getConnection('default', 'usebb2drupal');
+    }
+    catch (ConnectionNotDefinedException $e) {
       $db_spec = [
         'driver' => 'mysql',
         'database' => $this->databaseConfig['dbname'],
@@ -78,17 +81,15 @@ class UseBBInfo implements UseBBInfoInterface {
         'host' => $this->databaseConfig['server'],
         'prefix' => $this->databaseConfig['prefix'],
       ];
-      Database::addConnectionInfo('migrate', 'default', $db_spec);
-      $database = Database::getConnection('default', 'migrate');
+      Database::addConnectionInfo('usebb2drupal', 'default', $db_spec);
+      $database = Database::getConnection('default', 'usebb2drupal');
 
       // Check the tables and prefix are okay.
       if (!$database->schema()->tableExists('members')) {
         throw new MissingDatabaseTablesException('Wrong table prefix or no database tables found.');
       }
-
-      $this->database = $database;
     }
-    return $this->database;
+    return $database;
   }
 
   /**

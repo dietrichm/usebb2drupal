@@ -37,4 +37,11 @@ abstract class UseBBSource extends SqlBase {
     );
   }
 
+  /**
+   * {@inheritdoc}
+   */
+  public function getDatabase() {
+    return $this->info->getDatabase();
+  }
+
 }
