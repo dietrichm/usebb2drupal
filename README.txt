@@ -22,13 +22,18 @@ There is no configuration to be made, but the migration can be started from
 admin/structure/forum/migrate-usebb. Specify UseBB's installation path and
 click 'Start migration'.
 
+For user signatures to be migrated, you must first download and install the
+contrib signature module, found at https://www.drupal.org/project/signature.
+
+Selecting "Structure and content without users" will cause all topics and posts
+to be authored by user 0 (Anonymous). This is suitable if you want to migrate
+the contents but not the member base, e.g. for archived or dead forums. The
+original poster's username will be shown as "Name for Anonymous".
+
 If you want to convert internal links in forum descriptions, topics, posts and
 user signatures, you need to provide the public URLs on which the UseBB forum
 can or could be accessed in the past. Without the URL(s), the translation is
 disabled.
-
-For user signatures to be migrated, you must first download and install the
-contrib signature module, found at https://www.drupal.org/project/signature.
 
 Please test the migration on a private or local environment before executing
 it on a live website. All forums will become public, even when UseBB permissions
