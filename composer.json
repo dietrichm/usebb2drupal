@@ -1,0 +1,19 @@
+{
+  "name": "drupal/usebb2drupal",
+  "type": "drupal-module",
+  "description": "Migrate from legacy UseBB 1 forums.",
+  "keywords": ["Drupal", "content", "migrate", "forums"],
+  "license": "GPL-2.0+",
+  "homepage": "https://www.drupal.org/project/usebb2drupal",
+  "minimum-stability": "RC",
+  "authors": [
+    {
+      "name": "Dietrich Moerman",
+      "role": "Maintainer"
+    }
+  ],
+  "support": {
+    "issues": "https://www.drupal.org/project/issues/usebb2drupal",
+    "source": "http://cgit.drupalcode.org/usebb2drupal"
+  }
+}
